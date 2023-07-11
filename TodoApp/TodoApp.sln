@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33801.468
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoApp", "TodoApp\TodoApp.csproj", "{DEEAB036-5A3D-4AB1-A6CD-C38A2C27104D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoApp.Desktop", "TodoApp.Desktop\TodoApp.Desktop.csproj", "{601EEE00-15CD-431B-8BFB-901C16679ED2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DEEAB036-5A3D-4AB1-A6CD-C38A2C27104D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEEAB036-5A3D-4AB1-A6CD-C38A2C27104D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEEAB036-5A3D-4AB1-A6CD-C38A2C27104D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEEAB036-5A3D-4AB1-A6CD-C38A2C27104D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{601EEE00-15CD-431B-8BFB-901C16679ED2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{601EEE00-15CD-431B-8BFB-901C16679ED2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{601EEE00-15CD-431B-8BFB-901C16679ED2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{601EEE00-15CD-431B-8BFB-901C16679ED2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B4BDBC00-5C7B-4809-8402-450BE5761746}
+	EndGlobalSection
+EndGlobal
