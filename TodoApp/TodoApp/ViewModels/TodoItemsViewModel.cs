@@ -9,7 +9,7 @@ namespace TodoApp.ViewModels;
 
 public sealed partial class TodoItemsViewModel : ViewModelBase
 {
-    private ObservableCollection<TodoItem> _todoItems = new ObservableCollection<TodoItem>();
+    private ObservableCollection<TodoItem> _todoItems = new ObservableCollection<TodoItem>() { new TodoItem("test", "desc", DateOnly.FromDateTime(DateTime.Now)) };
 
     public string Greeting => "Welcome to Avalonia!";
 
