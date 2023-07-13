@@ -6,7 +6,7 @@ using TodoApp.Models;
 
 namespace TodoApp.ViewModels;
 
-public sealed partial class TodoItemsViewModel : ViewModelBase, INotifyPropertyChanged
+public sealed partial class TodoItemsViewModel : ViewModelBase
 {
     private IList<TodoItem> _todoItems = new List<TodoItem>();
 
@@ -16,16 +16,8 @@ public sealed partial class TodoItemsViewModel : ViewModelBase, INotifyPropertyC
 
     public IList<TodoItem> TodoItems
     {
-        get
-        {
-            return _todoItems;
-        }
-
-        set
-        {
-            _todoItems = value;
-            NotifyPropertyChanged();
-        }
+        get => _todoItems;
+        set => SetProperty(ref _todoItems, value);
     }
 
     private void AddTodoItem(TodoItem item)
@@ -36,12 +28,5 @@ public sealed partial class TodoItemsViewModel : ViewModelBase, INotifyPropertyC
     private void RemoveTodoItem(TodoItem item)
     {
         TodoItems.Remove(item);
-    }
-
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    public void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
