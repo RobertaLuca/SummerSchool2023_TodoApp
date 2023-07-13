@@ -3,7 +3,7 @@ using TodoApp.Models;
 
 namespace TodoApp.ViewModels;
 
-public partial class MainViewModel : ViewModelBase
+public partial class TodoItemsViewModel : ViewModelBase
 {
     public string Greeting => "Welcome to Avalonia!";
 

@@ -8,5 +8,5 @@
         x:Class="TodoApp.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="TodoApp">
-        <views:MainView />
+  <views:TodoItemsView />
 </Window>
