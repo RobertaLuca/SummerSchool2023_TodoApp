@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using TodoApp.Models;
+using Material.Icons;
 
 namespace TodoApp.ViewModels;
 
