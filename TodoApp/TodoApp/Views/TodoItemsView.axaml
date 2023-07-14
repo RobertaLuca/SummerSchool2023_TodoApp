@@ -13,23 +13,27 @@
     <vm:TodoItemsViewModel />
   </Design.DataContext>
 
-  <!--<TextBlock Text="{Binding Item.DueDate}" HorizontalAlignment="Center" VerticalAlignment="Center"/>-->
-<Grid RowDefinitions="1*, 5*">
-		<ItemsRepeater Items="{Binding TodoItems}" Margin="0, 10, 0, 0" Grid.Row="1" HorizontalAlignment="Center" Name="Repeater">
-			<ItemsRepeater.Layout>
-				<UniformGridLayout ></UniformGridLayout>
-			</ItemsRepeater.Layout>
-			<ItemsRepeater.ItemTemplate>
-				<DataTemplate>
-					<Button Margin="10" Width="100" Height="100">
-            <StackPanel>
-              <!--<icons:MaterialIcon Width="50" Height="50"  Kind="{Binding Icon}" DockPanel.Dock="Top" Margin="0 10 0 0" />-->
-              <TextBlock Text="{Binding Title}" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-              <TextBlock Text="{Binding Description}" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-            </StackPanel>
-					</Button>
-				</DataTemplate>
-			</ItemsRepeater.ItemTemplate>
-		</ItemsRepeater>
-	</Grid>
+  <ScrollViewer>
+    <Grid RowDefinitions="1*, 5*">
+      <TextBlock HorizontalAlignment="Center" FontSize="25" FontWeight="Bold" Grid.Row="0" Margin="10">Todo List</TextBlock>
+
+      <ItemsRepeater Items="{Binding TodoItems}" Margin="0, 10, 0, 0" Grid.Row="1" HorizontalAlignment="Center" Name="Repeater">
+        <ItemsRepeater.Layout>
+          <UniformGridLayout ></UniformGridLayout>
+        </ItemsRepeater.Layout>
+        <ItemsRepeater.ItemTemplate>
+          <DataTemplate>
+            <Panel Margin="10" Width="150" Height="200" Background="LightBlue">
+              <Grid>
+                <TextBlock Text="{Binding Title}" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Center"></TextBlock>
+                <TextBlock Text="{Binding Description}" FontStyle="Italic" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+                <TextBlock Text="{Binding DueDate}" VerticalAlignment="Bottom" HorizontalAlignment="Center"></TextBlock>
+              </Grid>
+            </Panel>
+          </DataTemplate>
+        </ItemsRepeater.ItemTemplate>
+      </ItemsRepeater>
+      
+    </Grid>
+  </ScrollViewer>
 </UserControl>

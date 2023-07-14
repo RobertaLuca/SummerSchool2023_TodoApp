@@ -1,15 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using TodoApp.Models;
 
 namespace TodoApp.ViewModels;
 
 public sealed partial class TodoItemsViewModel : ViewModelBase
 {
-    private ObservableCollection<TodoItem> _todoItems = new ObservableCollection<TodoItem>() { new TodoItem("test", "desc", DateOnly.FromDateTime(DateTime.Now)) };
+    private ObservableCollection<TodoItem> _todoItems = new ObservableCollection<TodoItem>() { 
+        new TodoItem("Test", "desc", DateOnly.FromDateTime(DateTime.Now)),
+        new TodoItem("Test", "desc", DateOnly.FromDateTime(DateTime.Now)),
+        new TodoItem("Test", "desc", DateOnly.FromDateTime(DateTime.Now)),
+        new TodoItem("Test", "desc", DateOnly.FromDateTime(DateTime.Now)),
+        new TodoItem("Test", "desc", DateOnly.FromDateTime(DateTime.Now)),
+        new TodoItem("Test", "desc", DateOnly.FromDateTime(DateTime.Now)),
+        new TodoItem("Test", "desc", DateOnly.FromDateTime(DateTime.Now)),
+        new TodoItem("Test", "desc", DateOnly.FromDateTime(DateTime.Now)),
+        new TodoItem("Test", "desc", DateOnly.FromDateTime(DateTime.Now)),
+        new TodoItem("Test", "desc", DateOnly.FromDateTime(DateTime.Now)),
+        new TodoItem("Test", "desc", DateOnly.FromDateTime(DateTime.Now)),
+        new TodoItem("Test", "desc", DateOnly.FromDateTime(DateTime.Now)),
+        new TodoItem("Test", "desc", DateOnly.FromDateTime(DateTime.Now)),
+        new TodoItem("Test", "desc", DateOnly.FromDateTime(DateTime.Now)),
+        new TodoItem("Test", "desc", DateOnly.FromDateTime(DateTime.Now)),
+        new TodoItem("Test", "desc", DateOnly.FromDateTime(DateTime.Now)),
+        new TodoItem("Test", "desc", DateOnly.FromDateTime(DateTime.Now)),
+        new TodoItem("Test", "desc", DateOnly.FromDateTime(DateTime.Now)),
+    };
 
     public string Greeting => "Welcome to Avalonia!";
 
