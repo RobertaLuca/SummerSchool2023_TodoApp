@@ -1,6 +1,6 @@
-﻿using Avalonia;
-namespace TodoApp.ViewModels
+﻿namespace TodoApp.ViewModels
 {
+    using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Controls.ApplicationLifetimes;
     using System.Collections.ObjectModel;
