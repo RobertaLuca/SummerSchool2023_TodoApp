@@ -52,11 +52,6 @@ public sealed partial class TodoItemsViewModel : ViewModelBase
 
     public DelegateCommand OpenPopupCommand { get; }
 
-    private void AddTodoItem(TodoItem item)
-    {
-        TodoItems.Add(item);
-    }
-
     private void RemoveTodoItem(TodoItem item)
     {
         TodoItems.Remove(item);
@@ -76,9 +71,9 @@ public sealed partial class TodoItemsViewModel : ViewModelBase
 
         await popup.ShowDialog(mainWindow);
 
-
-
-        TodoItem item = new TodoItem(_addTodoItemViewModel.Title, _addTodoItemViewModel.Description, _addTodoItemViewModel.DueDate.Value.DateTime);
-        TodoItems.Add(item);
+        if (_addTodoItemViewModel.CreatedItem != null)
+        {
+            TodoItems.Add(_addTodoItemViewModel.CreatedItem);
+        }
     }
 }

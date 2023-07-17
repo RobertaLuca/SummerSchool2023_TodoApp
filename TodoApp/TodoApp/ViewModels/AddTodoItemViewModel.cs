@@ -33,6 +33,19 @@ namespace TodoApp.ViewModels
             set => SetProperty(ref _dueDate, value);
         }
 
+        public TodoItem CreatedItem
+        {
+            get
+            {
+                if (Title == null || Description == null || DueDate == null)
+                {
+                    return null;
+                }
+
+                return new TodoItem(Title, Description, DueDate.Value.DateTime);
+            }
+        }
+
         public DelegateCommand SaveItemCommand { get; }
 
         private void SaveItem()
