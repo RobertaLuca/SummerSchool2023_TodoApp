@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:TodoApp.ViewModels"
              xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-             
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="350"
              x:DataType="vm:AddTodoItemViewModel"
              x:CompileBindings="True"
@@ -31,5 +30,6 @@
     </Grid>
     
     <Button Content="Save" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Command="{Binding SaveItemCommand}"/>
+  
   </StackPanel>
 </UserControl>

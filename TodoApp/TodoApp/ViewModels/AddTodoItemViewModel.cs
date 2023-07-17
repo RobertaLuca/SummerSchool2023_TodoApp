@@ -37,7 +37,6 @@ namespace TodoApp.ViewModels
 
         private void SaveItem()
         {
-            
 
         }
     }

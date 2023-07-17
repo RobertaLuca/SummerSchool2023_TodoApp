@@ -76,8 +76,9 @@ public sealed partial class TodoItemsViewModel : ViewModelBase
 
         await popup.ShowDialog(mainWindow);
 
-        popup.Close();
+
 
         TodoItem item = new TodoItem(_addTodoItemViewModel.Title, _addTodoItemViewModel.Description, _addTodoItemViewModel.DueDate.Value.DateTime);
+        TodoItems.Add(item);
     }
 }

@@ -36,7 +36,7 @@
               <Grid RowDefinitions="Auto, Auto, 1*" Margin="5,5,5,5">
                 <TextBlock Text="{Binding Title}" Grid.Row="0" Margin="0,0,0,5" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Center" TextWrapping="Wrap"></TextBlock>
                 <TextBlock Text="{Binding Description}" Grid.Row="1" FontStyle="Italic" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap"></TextBlock>
-                <TextBlock Text="{Binding DueDate}" Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Center"></TextBlock>
+                <TextBlock Text="{Binding DueDate, StringFormat={}{0:yyyy/MM/dd}}" Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Center"></TextBlock>
               </Grid>
             </Panel>
           </DataTemplate>
