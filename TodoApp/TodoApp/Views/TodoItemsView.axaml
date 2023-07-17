@@ -8,7 +8,7 @@
              x:Class="TodoApp.Views.TodoItemsView"
              x:DataType="vm:TodoItemsViewModel"
              x:CompileBindings="True">
-             
+
   <Design.DataContext>
     <!-- This only sets the DataContext for the previewer in an IDE,
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
@@ -17,12 +17,13 @@
 
   <ScrollViewer>
     <Grid RowDefinitions="1*, 5*">
-      <Button Margin="10" Width="40" Height="40">
+
+      <Button Margin="10" Width="40" Height="40" Command="{Binding OpenPopupCommand}">
         <DockPanel LastChildFill="True">
           <icons:MaterialIcon Width="40" Height="40" Kind="Add" DockPanel.Dock="Top"/>
         </DockPanel>
       </Button>
-      
+
       <TextBlock HorizontalAlignment="Center" FontSize="25" FontWeight="Bold" Grid.Row="0" Margin="10">Todo List</TextBlock>
 
       <ItemsRepeater Items="{Binding TodoItems}" Margin="0, 10, 0, 0" Grid.Row="1" HorizontalAlignment="Center" Name="Repeater">
@@ -41,7 +42,7 @@
           </DataTemplate>
         </ItemsRepeater.ItemTemplate>
       </ItemsRepeater>
-      
+
     </Grid>
   </ScrollViewer>
 </UserControl>

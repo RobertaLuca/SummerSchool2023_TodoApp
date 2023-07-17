@@ -8,6 +8,6 @@
        
         string Description { get; }
 
-        DateOnly DueDate { get; }
+        DateTime DueDate { get; }
     }
 }

@@ -8,9 +8,9 @@
 
         public string Description { get; set; }
 
-        public DateOnly DueDate { get; set; }
+        public DateTime DueDate { get; set; }
 
-        public TodoItem(string title, string description, DateOnly dueDate)
+        public TodoItem(string title, string description, DateTime dueDate)
         {
             Title = title;
             Description = description;

@@ -1,0 +1,35 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:TodoApp.ViewModels"
+             xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:controls="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="350"
+             x:DataType="vm:AddTodoItemViewModel"
+             x:CompileBindings="True"
+             x:Class="TodoApp.Views.AddTodoItemView">
+  <Design.DataContext>
+    <!-- This only sets the DataContext for the previewer in an IDE,
+         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+    <vm:AddTodoItemViewModel />
+  </Design.DataContext>
+  
+  <StackPanel>
+    <Grid RowDefinitions="1*, 1*, 1*, 1*, 5*" ColumnDefinitions="* 5*" Margin="30 10 30 10">
+      <TextBlock HorizontalAlignment="Center" FontSize="25" FontWeight="Bold" Grid.Row="0" Grid.ColumnSpan="2" Margin="0 5 0 10">Add Todo Item</TextBlock>
+
+      <TextBlock Grid.Row="1" Grid.Column="0" Text="Title" VerticalAlignment="Center" Margin="0 5 0 10"/>
+      <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Title}" Margin="0 5 0 10"/>
+
+      <TextBlock Grid.Row="2" Grid.Column="0" Text="Description" VerticalAlignment="Center" Margin="0 5 0 10"/>
+      <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Description}" Margin="0 5 0 10"/>
+
+      <TextBlock Grid.Row="3" Grid.Column="0" Text="Due Date" VerticalAlignment="Center" Margin="0 5 0 10"/>
+      <controls:DatePicker Grid.Row="3" Grid.Column="1" SelectedDate="{Binding DueDate}" Margin="0 5 0 10" />
+
+    </Grid>
+    
+    <Button Content="Save" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Command="{Binding SaveItemCommand}"/>
+  </StackPanel>
+</UserControl>
