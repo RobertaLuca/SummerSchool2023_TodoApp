@@ -3,7 +3,10 @@
     using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Controls.ApplicationLifetimes;
+    using System;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Linq;
     using TodoApp.Helper;
     using TodoApp.Models;
     using TodoApp.Views;
@@ -17,6 +20,8 @@
             _addTodoItemViewModel = new AddTodoItemViewModel();
 
             OpenPopupCommand = new DelegateCommand(OpenAddItemPopup);
+            GetNotDueItemsCommand = new DelegateCommand(GetNotDueItems);
+            GetAllItemsCommand = new DelegateCommand(GetAllItems);
         }
 
         public AddTodoItemViewModel AddTodoItemViewModel
@@ -25,9 +30,24 @@
             set => SetProperty(ref _addTodoItemViewModel, value);
         }
 
-        public ObservableCollection<TodoItem> TodoItems { get; } = new();
+        // initial implementation
+        //public ObservableCollection<TodoItem> TodoItems { get; } = new();
+
+        // for filtering
+        private IList<TodoItem> _allTodoItems = new List<TodoItem>();
+
+        private ObservableCollection<TodoItem> _todoItems = new ObservableCollection<TodoItem>();
+        public ObservableCollection<TodoItem> TodoItems
+        {
+            get => _todoItems;
+            set => SetProperty(ref _todoItems, value);
+        }
 
         public DelegateCommand OpenPopupCommand { get; }
+
+        public DelegateCommand GetNotDueItemsCommand { get; }
+
+        public DelegateCommand GetAllItemsCommand { get; }
 
         private void RemoveTodoItem(TodoItem item)
         {
@@ -56,6 +76,18 @@
             {
                 TodoItems.Add(_addTodoItemViewModel.CreatedItem);
             }
+        }
+
+        private void GetNotDueItems()
+        {
+            _allTodoItems = TodoItems;
+            var notDueItems = TodoItems.OrderBy(item => item.DueDate).Where(item => item.DueDate >= DateTime.Now.Date).ToList();
+            TodoItems = new ObservableCollection<TodoItem>(notDueItems);
+        }
+
+        private void GetAllItems()
+        {
+            TodoItems = new ObservableCollection<TodoItem>(_allTodoItems);
         }
     }
 }
