@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using TodoApp.Helper;
 using TodoApp.Models;
 using TodoApp.Views;
@@ -34,6 +35,7 @@ public sealed partial class TodoItemsViewModel : ViewModelBase
     public TodoItemsViewModel()
     {
         OpenPopupCommand = new DelegateCommand(OpenPopup);
+        _addTodoItemViewModel = new AddTodoItemViewModel();
     }
 
     public AddTodoItemViewModel AddTodoItemViewModel
@@ -42,11 +44,11 @@ public sealed partial class TodoItemsViewModel : ViewModelBase
         set => SetProperty(ref _addTodoItemViewModel, value);
     }
 
+
     public ObservableCollection<TodoItem> TodoItems
     {
-        get => _todoItems;
-        set => SetProperty(ref _todoItems, value);
-    }
+        get;
+    } = new();
 
     public DelegateCommand OpenPopupCommand { get; }
 
@@ -60,11 +62,11 @@ public sealed partial class TodoItemsViewModel : ViewModelBase
         TodoItems.Remove(item);
     }
 
-    private void OpenPopup()
+    private async void OpenPopup()
     {
         var popup = new Window()
         {
-            Content = new AddTodoItemView {},
+            Content = new AddTodoItemView {DataContext=AddTodoItemViewModel},
             Width = 600,
             Height = 350,
             WindowStartupLocation = WindowStartupLocation.CenterOwner,
@@ -72,6 +74,10 @@ public sealed partial class TodoItemsViewModel : ViewModelBase
 
         var mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow : null;
 
-        popup.ShowDialog(mainWindow);
+        await popup.ShowDialog(mainWindow);
+
+        popup.Close();
+
+        TodoItem item = new TodoItem(_addTodoItemViewModel.Title, _addTodoItemViewModel.Description, _addTodoItemViewModel.DueDate.Value.DateTime);
     }
 }

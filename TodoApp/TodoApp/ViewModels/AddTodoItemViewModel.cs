@@ -8,7 +8,7 @@ namespace TodoApp.ViewModels
     {
         private string _title;
         private string _description;
-        private DateTime _dueDate;
+        private DateTimeOffset? _dueDate;
 
         public AddTodoItemViewModel()
         {
@@ -27,7 +27,7 @@ namespace TodoApp.ViewModels
             set => SetProperty(ref _description, value);
         }
 
-        public DateTime DueDate
+        public DateTimeOffset? DueDate
         {
             get => _dueDate;
             set => SetProperty(ref _dueDate, value);
@@ -37,7 +37,7 @@ namespace TodoApp.ViewModels
 
         private void SaveItem()
         {
-            //TodoItem todoItem = new TodoItem(Title, Description, DueDate);
+            
 
         }
     }
