@@ -55,6 +55,8 @@ namespace TodoApp.ViewModels
 
         public DelegateCommand SaveItemCommand { get; }
 
+        public Action ClosePopup { get; set; }
+
         private void SaveItem()
         {
             if (Title == null || Description == null || DueDate == null ||
@@ -69,6 +71,7 @@ namespace TodoApp.ViewModels
             }
 
             // TODO: close the window
+            ClosePopup?.Invoke();
 
             ResetFields();
         }

@@ -44,9 +44,12 @@ public sealed partial class TodoItemsViewModel : ViewModelBase
             WindowStartupLocation = WindowStartupLocation.CenterOwner,
         };
 
-        popup.Closed += AddItemPopupWindow_Closed;
-
         var mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow : null;
+
+        _addTodoItemViewModel.ClosePopup = () =>
+        {
+            popup.Close();
+        };
 
         await popup.ShowDialog(mainWindow);
 
@@ -54,10 +57,5 @@ public sealed partial class TodoItemsViewModel : ViewModelBase
         {
             TodoItems.Add(_addTodoItemViewModel.CreatedItem);
         }
-    }
-
-    private void AddItemPopupWindow_Closed(object sender, EventArgs e)
-    {
-        
     }
 }
