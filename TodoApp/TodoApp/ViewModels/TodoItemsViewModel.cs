@@ -1,61 +1,61 @@
 ﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
-using System;
-using System.Collections.ObjectModel;
-using TodoApp.Helper;
-using TodoApp.Models;
-using TodoApp.Views;
-
-namespace TodoApp.ViewModels;
-
-public sealed partial class TodoItemsViewModel : ViewModelBase
+namespace TodoApp.ViewModels
 {
-    private AddTodoItemViewModel _addTodoItemViewModel;
+    using Avalonia.Controls;
+    using Avalonia.Controls.ApplicationLifetimes;
+    using System.Collections.ObjectModel;
+    using TodoApp.Helper;
+    using TodoApp.Models;
+    using TodoApp.Views;
 
-    public TodoItemsViewModel()
+    public sealed partial class TodoItemsViewModel : ViewModelBase
     {
-        OpenPopupCommand = new DelegateCommand(OpenPopup);
-        _addTodoItemViewModel = new AddTodoItemViewModel();
-    }
+        private AddTodoItemViewModel _addTodoItemViewModel;
 
-    public AddTodoItemViewModel AddTodoItemViewModel
-    {
-        get => _addTodoItemViewModel;
-        set => SetProperty(ref _addTodoItemViewModel, value);
-    }
-
-    public ObservableCollection<TodoItem> TodoItems { get; } = new();
-
-    public DelegateCommand OpenPopupCommand { get; }
-
-    private void RemoveTodoItem(TodoItem item)
-    {
-        TodoItems.Remove(item);
-    }
-
-    private async void OpenPopup()
-    {
-        var popup = new Window()
+        public TodoItemsViewModel()
         {
-            Content = new AddTodoItemView {DataContext=AddTodoItemViewModel},
-            Width = 600,
-            Height = 350,
-            WindowStartupLocation = WindowStartupLocation.CenterOwner,
-        };
+            _addTodoItemViewModel = new AddTodoItemViewModel();
 
-        var mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow : null;
+            OpenPopupCommand = new DelegateCommand(OpenAddItemPopup);
+        }
 
-        _addTodoItemViewModel.ClosePopup = () =>
+        public AddTodoItemViewModel AddTodoItemViewModel
         {
-            popup.Close();
-        };
+            get => _addTodoItemViewModel;
+            set => SetProperty(ref _addTodoItemViewModel, value);
+        }
 
-        await popup.ShowDialog(mainWindow);
+        public ObservableCollection<TodoItem> TodoItems { get; } = new();
 
-        if (_addTodoItemViewModel.IsValid)
+        public DelegateCommand OpenPopupCommand { get; }
+
+        private void RemoveTodoItem(TodoItem item)
         {
-            TodoItems.Add(_addTodoItemViewModel.CreatedItem);
+            TodoItems.Remove(item);
+        }
+
+        private async void OpenAddItemPopup()
+        {
+            var addItemPopup = new Window()
+            {
+                Content = new AddTodoItemView { DataContext = AddTodoItemViewModel },
+                Width = 600,
+                Height = 350,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            };
+
+            _addTodoItemViewModel.ClosePopup = () =>
+            {
+                addItemPopup.Close();
+            };
+
+            var mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow : null;
+            await addItemPopup.ShowDialog(mainWindow);
+
+            if (_addTodoItemViewModel.IsValid)
+            {
+                TodoItems.Add(_addTodoItemViewModel.CreatedItem);
+            }
         }
     }
 }

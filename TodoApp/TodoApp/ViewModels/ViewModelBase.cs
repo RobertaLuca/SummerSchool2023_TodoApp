@@ -1,7 +1,8 @@
-﻿using TodoApp.Helper;
-
-namespace TodoApp.ViewModels;
-
-public class ViewModelBase : ObservableObject
+﻿namespace TodoApp.ViewModels
 {
+    using TodoApp.Helper;
+
+    public class ViewModelBase : ObservableObject
+    {
+    }
 }

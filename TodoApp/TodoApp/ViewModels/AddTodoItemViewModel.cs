@@ -1,9 +1,9 @@
-﻿using System;
-using TodoApp.Helper;
-using TodoApp.Models;
-
-namespace TodoApp.ViewModels
+﻿namespace TodoApp.ViewModels
 {
+    using System;
+    using TodoApp.Helper;
+    using TodoApp.Models;
+
     public sealed partial class AddTodoItemViewModel : ViewModelBase
     {
         private string _title = string.Empty;
@@ -70,7 +70,6 @@ namespace TodoApp.ViewModels
                 CreatedItem = new TodoItem(Title, Description, DueDate.Value.DateTime);
             }
 
-            // TODO: close the window
             ClosePopup?.Invoke();
 
             ResetFields();

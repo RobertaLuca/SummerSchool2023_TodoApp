@@ -1,8 +1,8 @@
-﻿using System;
-using System.Windows.Input;
-
-namespace TodoApp.Helper
+﻿namespace TodoApp.Helper
 {
+    using System;
+    using System.Windows.Input;
+
     public class DelegateCommand : ICommand
     {
         private readonly Action _action;
