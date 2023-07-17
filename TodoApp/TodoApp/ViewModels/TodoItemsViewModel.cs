@@ -3,7 +3,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using System;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 using TodoApp.Helper;
 using TodoApp.Models;
 using TodoApp.Views;
@@ -12,24 +11,6 @@ namespace TodoApp.ViewModels;
 
 public sealed partial class TodoItemsViewModel : ViewModelBase
 {
-    private ObservableCollection<TodoItem> _todoItems = new ObservableCollection<TodoItem>() { 
-        new TodoItem("Test", "desc", DateTime.Now),
-        new TodoItem("Test", "desc", DateTime.Now),
-        new TodoItem("Test", "desc", DateTime.Now),
-        new TodoItem("Test", "desc", DateTime.Now),
-        new TodoItem("Test", "desc", DateTime.Now),
-        new TodoItem("Test", "desc", DateTime.Now),
-        new TodoItem("Test", "desc", DateTime.Now),
-        new TodoItem("Test", "desc", DateTime.Now),
-        new TodoItem("Test", "desc", DateTime.Now),
-        new TodoItem("Test", "desc", DateTime.Now),
-        new TodoItem("Test", "desc", DateTime.Now),
-        new TodoItem("Test", "desc", DateTime.Now),
-        new TodoItem("Test", "desc", DateTime.Now),
-        new TodoItem("Test", "desc", DateTime.Now),
-        new TodoItem("Test", "desc", DateTime.Now),
-    };
-
     private AddTodoItemViewModel _addTodoItemViewModel;
 
     public TodoItemsViewModel()
@@ -44,11 +25,7 @@ public sealed partial class TodoItemsViewModel : ViewModelBase
         set => SetProperty(ref _addTodoItemViewModel, value);
     }
 
-
-    public ObservableCollection<TodoItem> TodoItems
-    {
-        get;
-    } = new();
+    public ObservableCollection<TodoItem> TodoItems { get; } = new();
 
     public DelegateCommand OpenPopupCommand { get; }
 
@@ -67,13 +44,20 @@ public sealed partial class TodoItemsViewModel : ViewModelBase
             WindowStartupLocation = WindowStartupLocation.CenterOwner,
         };
 
+        popup.Closed += AddItemPopupWindow_Closed;
+
         var mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow : null;
 
         await popup.ShowDialog(mainWindow);
 
-        if (_addTodoItemViewModel.CreatedItem != null)
+        if (_addTodoItemViewModel.IsValid)
         {
             TodoItems.Add(_addTodoItemViewModel.CreatedItem);
         }
+    }
+
+    private void AddItemPopupWindow_Closed(object sender, EventArgs e)
+    {
+        
     }
 }
