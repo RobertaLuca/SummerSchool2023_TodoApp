@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using ReactiveUI;
 using RestSharp;
 
 namespace TodoApp.Services;
@@ -33,13 +34,14 @@ public class ChatGPTService : IChatBotService
             request.AddHeader("Content-Type", "application/json");
             // Set the Authorization header with the API key
 
-            prompt
-
             request.AddHeader("Authorization", $"Bearer {_apiKey}");
             var requestBody = new
             {
                 model = model!,
-                messages = message,
+                messages = $"Tell me how much that these products weight " +
+                    $"[NO OTHER WORDS, NOT A SINGLE WORD PLEASE JUST THE NUMBER AND THAT'S ALL," +
+                    $" NO GREETINGS OR A MESSAGE TO TELL THAT YOU UNDERSTOOD THE JOB, JUST THE NUMBER]:" +
+                    $" {message}",
                 temperature = 0.5,
                 max_tokens = 256,
                 top_p = 1,
