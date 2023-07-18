@@ -9,59 +9,64 @@
              x:DataType="vm:TodoItemsViewModel"
              x:CompileBindings="True">
 
-  <Design.DataContext>
-    <!-- This only sets the DataContext for the previewer in an IDE,
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-    <vm:TodoItemsViewModel />
-  </Design.DataContext>
+		<vm:TodoItemsViewModel />
+	</Design.DataContext>
 
-  <ScrollViewer>
-    <Grid RowDefinitions="1*, 5*">
+	<ScrollViewer>
+		<Grid RowDefinitions="1*, 5*">
 
-      <Button Margin="10" Width="40" Height="40" Command="{Binding OpenPopupCommand}">
-        <DockPanel LastChildFill="True">
-          <icons:MaterialIcon Width="40" Height="40" Kind="Add" DockPanel.Dock="Top"/>
-        </DockPanel>
-      </Button>
+			<Button Margin="10" Width="40" Height="40" Command="{Binding OpenPopupCommand}">
+				<DockPanel LastChildFill="True">
+					<icons:MaterialIcon Width="40" Height="40" Kind="Add" DockPanel.Dock="Top"/>
+				</DockPanel>
+			</Button>
 
-      <Button Margin="10" Width="40" Height="40" Command="{Binding GetNotDueItemsCommand}" HorizontalAlignment="Right">
-        <DockPanel LastChildFill="True">
-          <icons:MaterialIcon Width="40" Height="40" Kind="Filter" DockPanel.Dock="Top"/>
-        </DockPanel>
-      </Button>
+			<Button Margin="10" Width="40" Height="40" Command="{Binding GetNotDueItemsCommand}" HorizontalAlignment="Right">
+				<DockPanel LastChildFill="True">
+					<icons:MaterialIcon Width="40" Height="40" Kind="Filter" DockPanel.Dock="Top"/>
+				</DockPanel>
+			</Button>
 
-      <Button Margin="10 10 60 10" Width="40" Height="40" Command="{Binding GetAllItemsCommand}" HorizontalAlignment="Right">
-        <DockPanel LastChildFill="True">
-          <icons:MaterialIcon Width="40" Height="40" Kind="Reload" DockPanel.Dock="Top"/>
-        </DockPanel>
-      </Button>
+			<Button Margin="10 10 60 10" Width="40" Height="40" Command="{Binding GetAllItemsCommand}" HorizontalAlignment="Right">
+				<DockPanel LastChildFill="True">
+					<icons:MaterialIcon Width="40" Height="40" Kind="Reload" DockPanel.Dock="Top"/>
+				</DockPanel>
+			</Button>
 
-      <TextBlock HorizontalAlignment="Center" FontSize="25" FontWeight="Bold" Grid.Row="0" Margin="10">Todo List</TextBlock>
+			<TextBlock HorizontalAlignment="Center" FontSize="25" FontWeight="Bold" Grid.Row="0" Margin="10">Todo List</TextBlock>
 
-      <ItemsRepeater Items="{Binding TodoItems}" Margin="0, 10, 0, 0" Grid.Row="1" HorizontalAlignment="Center" Name="Repeater">
-        <ItemsRepeater.Layout>
-          <UniformGridLayout ></UniformGridLayout>
-        </ItemsRepeater.Layout>
-        <ItemsRepeater.ItemTemplate>
-          <DataTemplate>
-            <Panel Margin="10" Width="150" Height="200" Background="LightBlue">
-              <Grid RowDefinitions="Auto, Auto, 1*" Margin="5,5,5,5">
+			<ItemsRepeater Items="{Binding TodoItems}" Margin="0, 10, 0, 0" Grid.Row="1" HorizontalAlignment="Center" Name="Repeater">
+				<ItemsRepeater.Layout>
+					<UniformGridLayout ></UniformGridLayout>
+				</ItemsRepeater.Layout>
+				<ItemsRepeater.ItemTemplate>
+					<DataTemplate>
+						<Panel Margin="10" Width="200" Background="LightBlue">
+							<Grid RowDefinitions="Auto, Auto, 1*" Margin="5,5,5,5">
 
-                <Button Grid.Row="0" Width="30" Height="30" HorizontalAlignment="Right">
-                  <DockPanel LastChildFill="True">
-                    <icons:MaterialIcon Width="30" Height="30" Kind="Remove" DockPanel.Dock="Top"/>
-                  </DockPanel>
-                </Button>
-                
-                <TextBlock Text="{Binding Title}" Grid.Row="0" Margin="0,0,0,5" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Center" TextWrapping="Wrap"></TextBlock>
-                <TextBlock Text="{Binding Description}" Grid.Row="1" FontStyle="Italic" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap"></TextBlock>
-                <TextBlock Text="{Binding DueDate, StringFormat={}{0:yyyy/MM/dd}}" Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Center"></TextBlock>
-              </Grid>
-            </Panel>
-          </DataTemplate>
-        </ItemsRepeater.ItemTemplate>
-      </ItemsRepeater>
+								<Button Grid.Row="0" Width="30" Height="30" HorizontalAlignment="Right">
+									<DockPanel LastChildFill="True">
+										<icons:MaterialIcon Width="30" Height="30" Kind="Remove" DockPanel.Dock="Top"/>
+									</DockPanel>
+								</Button>
+								<Button Grid.Row="0" Width="30" Height="30" HorizontalAlignment="Right">
+									<DockPanel LastChildFill="True">
+										<icons:MaterialIcon Width="30" Height="30" Kind="RobotConfused" DockPanel.Dock="Bottom"/>
+									</DockPanel>
+								</Button>
 
-    </Grid>
-  </ScrollViewer>
+								<TextBlock Text="{Binding Title}" Grid.Row="0" Margin="0,0,0,5" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Center" TextWrapping="Wrap"></TextBlock>
+								<TextBlock Text="{Binding Description}" Grid.Row="1" FontStyle="Italic" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap"></TextBlock>
+								<TextBlock Text="{Binding DueDate, StringFormat={}{0:yyyy/MM/dd}}" Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Center"></TextBlock>
+							</Grid>
+						</Panel>
+					</DataTemplate>
+				</ItemsRepeater.ItemTemplate>
+			</ItemsRepeater>
+
+		</Grid>
+	</ScrollViewer>
 </UserControl>

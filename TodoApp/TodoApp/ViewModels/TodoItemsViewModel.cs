@@ -9,15 +9,19 @@
     using System.Linq;
     using TodoApp.Helper;
     using TodoApp.Models;
+    using TodoApp.Services;
     using TodoApp.Views;
 
     public sealed partial class TodoItemsViewModel : ViewModelBase
     {
         private AddTodoItemViewModel _addTodoItemViewModel;
 
-        public TodoItemsViewModel()
+        // TO DO: Add dependecy injection
+        // private IChatBotService _chatBotService;
+        public TodoItemsViewModel(/*IChatBotService chatBotService*/)
         {
             _addTodoItemViewModel = new AddTodoItemViewModel();
+            //_chatBotService = chatBotService;
 
             OpenPopupCommand = new DelegateCommand(OpenAddItemPopup);
             GetNotDueItemsCommand = new DelegateCommand(GetNotDueItems);
