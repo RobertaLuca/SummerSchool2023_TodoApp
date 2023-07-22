@@ -9,5 +9,6 @@
         string Description { get; }
 
         DateTime DueDate { get; }
+        bool IsDone { get; }
     }
 }

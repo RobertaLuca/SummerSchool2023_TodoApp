@@ -3,10 +3,14 @@
     using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Controls.ApplicationLifetimes;
+    using CommunityToolkit.Mvvm.Input;
+    using DynamicData.Aggregation;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
+    using System.Threading.Tasks;
+    using System.Windows.Input;
     using TodoApp.Helper;
     using TodoApp.Models;
     using TodoApp.Services;
@@ -17,15 +21,36 @@
         private AddTodoItemViewModel _addTodoItemViewModel;
 
         // TO DO: Add dependecy injection
-        // private IChatBotService _chatBotService;
+        private IChatBotService _chatBotService;
         public TodoItemsViewModel(/*IChatBotService chatBotService*/)
         {
             _addTodoItemViewModel = new AddTodoItemViewModel();
             //_chatBotService = chatBotService;
 
-            OpenPopupCommand = new DelegateCommand(OpenAddItemPopup);
+            OpenPopupCommand = new Helpers.AsyncRelayCommand<string>(OpenAddItemPopup, (ex) => { });
             GetNotDueItemsCommand = new DelegateCommand(GetNotDueItems);
             GetAllItemsCommand = new DelegateCommand(GetAllItems);
+            DeleteCommand = new Helpers.AsyncRelayCommand<TodoItem>(DeleteItem, (ex) => { });
+            SetDoneCommand = new Helpers.RelayCommand<TodoItem>(MarkAsDone);
+
+            CalculateMassCommand = new Helpers.AsyncRelayCommand<TodoItem>(CalculateMass, (ex) => { });
+        }
+
+        private void MarkAsDone(TodoItem item)
+        {
+            var index = TodoItems.IndexOf(item);
+
+            TodoItems.RemoveAt(index);
+            item.IsDone = true;
+            TodoItems.Insert(index, item);
+        }
+
+        private async Task DeleteItem(TodoItem? item)
+        {
+            if (item is not null)
+            {
+                TodoItems.Remove(item);
+            }
         }
 
         public AddTodoItemViewModel AddTodoItemViewModel
@@ -47,18 +72,21 @@
             set => SetProperty(ref _todoItems, value);
         }
 
-        public DelegateCommand OpenPopupCommand { get; }
+        public Helpers.AsyncRelayCommand<string> OpenPopupCommand { get; }
+        public Helpers.RelayCommand<TodoItem> SetDoneCommand { get; }
+        public Helpers.AsyncRelayCommand<TodoItem> DeleteCommand { get; }
 
         public DelegateCommand GetNotDueItemsCommand { get; }
 
         public DelegateCommand GetAllItemsCommand { get; }
+        public Helpers.AsyncRelayCommand<TodoItem> CalculateMassCommand { get; }
 
-        private void RemoveTodoItem(TodoItem item)
+        private async Task CalculateMass(TodoItem todoItem)
         {
-            TodoItems.Remove(item);
+            // await _chatBotService.GetResponse(todoItem.Description);
         }
 
-        private async void OpenAddItemPopup()
+        private async Task OpenAddItemPopup(string lUnused)
         {
             var addItemPopup = new Window()
             {
