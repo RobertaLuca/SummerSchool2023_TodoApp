@@ -1,10 +1,5 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using ReactiveUI;
-using RestSharp;
+﻿using RestSharp;
+using System.Text.Json;
 
 namespace TodoApp.Services;
 
@@ -21,11 +16,10 @@ public class ChatGPTService : IChatBotService, IDisposable
         // Initialize the RestClient with the ChatGPT API endpoint
         _client = new RestClient("https://api.openai.com/v1/chat/completions");
     }
-    
+
     public async Task<string> GetResponse(string message, string model, Func<string, string>? postProcess = null)
     {
-        string errorMessage;
-        if (!Validate(message, out errorMessage))
+        if (!Validate(message, out string errorMessage))
         {
             return errorMessage;
         }
@@ -60,28 +54,28 @@ public class ChatGPTService : IChatBotService, IDisposable
             };
 
             // Add the JSON body to the request
-            request.AddJsonBody(JsonConvert.SerializeObject(requestBody));
+            request.AddJsonBody(JsonSerializer.Serialize(requestBody));
 
             // Execute the request and receive the response
             var response = await _client.ExecuteAsync(request);
 
-            JObject json = JObject.Parse(response.Content ?? string.Empty);
-            var response_message = json?["choices"]?[0]?["message"]?["content"];
+            var json = JsonDocument.Parse(response.Content ?? string.Empty);
+            var response_message = json.RootElement.GetProperty("choices")[0].GetProperty("message").GetProperty("content").GetString() ?? string.Empty;
 
             // Extract and return the chatbot's response text
-            return response_message?.ToString()?.Trim() ?? String.Empty;
+            return response_message.Trim();
         }
         catch (Exception ex)
         {
             return $"Sorry, there was an error processing your request: {ex}. Please try again later.";
         }
     }
-    
-    private bool Validate(string message, out string error)
+
+    private static bool Validate(string message, out string error)
     {
         bool isValid = !string.IsNullOrWhiteSpace(message);
         error = "";
-        
+
         if (!isValid)
         {
             error = "Sorry, I didn't receive any input. Please try again!";

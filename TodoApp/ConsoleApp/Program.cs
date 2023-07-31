@@ -145,7 +145,7 @@ namespace ConsoleApp
                 }
 
                 // Send the user's input to the ChatGPT API and receive a response
-                string response = await chatBotService.GetResponse(input, "gpt-3.5-turbo", Constants.Messages.getTaskListMessage);
+                string response = await chatBotService.GetResponse(input, "gpt-3.5-turbo", Constants.Messages.GetTaskListMessage);
 
                 // Display the chatbot's response
                 Console.ForegroundColor = ConsoleColor.Blue; // Set text color to blue

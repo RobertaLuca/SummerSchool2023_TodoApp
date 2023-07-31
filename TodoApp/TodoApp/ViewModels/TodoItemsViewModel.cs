@@ -1,42 +1,26 @@
-﻿namespace TodoApp.ViewModels
-{
-    using Avalonia;
-    using Avalonia.Controls;
-    using Avalonia.Controls.ApplicationLifetimes;
-    using CommunityToolkit.Mvvm.Input;
-    using DynamicData.Aggregation;
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Linq;
-    using System.Runtime.CompilerServices;
-    using System.Threading.Tasks;
-    using System.Windows.Input;
-    using TodoApp.Helper;
-    using TodoApp.Helpers;
-    using TodoApp.Models;
-    using TodoApp.Services;
-    using TodoApp.Views;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using System.Collections.ObjectModel;
+using TodoApp.Helpers;
+using TodoApp.Services;
+using TodoApp.Views;
 
+namespace TodoApp.ViewModels
+{
     public sealed partial class TodoItemsViewModel : ViewModelBase
     {
-        private AddTodoItemViewModel _addTodoItemViewModel;
-        // TO DO: Add dependecy injection
-        private IChatBotService _chatBotService;
-        public TodoItemsViewModel(/*IChatBotService chatBotService*/)
+        private readonly IChatBotService _chatBotService;
+
+        public TodoItemsViewModel()
         {
-            _addTodoItemViewModel = new AddTodoItemViewModel();
             _chatBotService = new ChatGPTService(Utils.ReadSetting("OPENAI_API_KEY"));
-
-            OpenPopupCommand = new AsyncRelayCommand<string>(OpenAddItemPopup);
-            //GetNotDueItemsCommand = new DelegateCommand(GetNotDueItems);
-            //GetAllItemsCommand = new DelegateCommand(GetAllItems);
-            DeleteCommand = new AsyncRelayCommand<TodoItemViewModel>(DeleteItem);
-
-            CalculateMassCommand = new AsyncRelayCommand<TodoItemViewModel>(CalculateMass);
         }
 
-        private async Task DeleteItem(TodoItemViewModel? item)
+        [RelayCommand]
+        private void DeleteItem(TodoItemViewModel? item)
         {
             if (item is not null)
             {
@@ -44,37 +28,19 @@
             }
         }
 
-        private string? _charResponse;
-        public string? ChatResponse
-        {
-            get => _charResponse;
-            set => SetProperty(ref _charResponse, value);
-        }
+        [ObservableProperty]
+        private string? _chatResponse;
 
-        public AddTodoItemViewModel AddTodoItemViewModel
-        {
-            get => _addTodoItemViewModel;
-            set => SetProperty(ref _addTodoItemViewModel, value);
-        }
+        // initial implementation
+        //public ObservableCollection<TodoItem> TodoItems { get; } = new();
 
         // for filtering
-        private IList<TodoItem> _allTodoItems = new List<TodoItem>();
+        private ObservableCollection<TodoItemViewModel> _allTodoItems = new();
 
-        private ObservableCollection<TodoItemViewModel> _todoItems = new ObservableCollection<TodoItemViewModel>();
-        public ObservableCollection<TodoItemViewModel> TodoItems
-        {
-            get => _todoItems;
-            set => SetProperty(ref _todoItems, value);
-        }
+        [ObservableProperty]
+        private ObservableCollection<TodoItemViewModel> _todoItems = new();
 
-        public AsyncRelayCommand<string> OpenPopupCommand { get; }
-        public AsyncRelayCommand<TodoItemViewModel> DeleteCommand { get; }
-
-        public DelegateCommand GetNotDueItemsCommand { get; }
-
-        public DelegateCommand GetAllItemsCommand { get; }
-        public AsyncRelayCommand<TodoItemViewModel> CalculateMassCommand { get; }
-
+        [RelayCommand]
         private async Task CalculateMass(TodoItemViewModel todoItem)
         {
             if (todoItem.IsDone)
@@ -84,33 +50,46 @@
             }
 
             var fullInfo = $"{todoItem.Title} ({todoItem.Description})";
-            fullInfo = Constants.Messages.getEstimationMessage(fullInfo, todoItem.DueDate);
+            fullInfo = Constants.Messages.GetEstimationMessage(fullInfo, todoItem.DueDate);
 
             ChatResponse = await _chatBotService.GetResponse(fullInfo, ChatGPTService.DefaultModel);
         }
 
+        [RelayCommand]
         private async Task OpenAddItemPopup(string lUnused)
         {
-            var addItemPopup = new Window()
+            AddTodoItemViewModel addTodoItemViewModel = new();
+
+            Window addItemPopup = new()
             {
-                Content = new AddTodoItemView { DataContext = AddTodoItemViewModel },
+                Content = new AddTodoItemView { DataContext = addTodoItemViewModel },
                 Width = 600,
                 Height = 350,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
             };
 
-            _addTodoItemViewModel.ClosePopup = () =>
-            {
-                addItemPopup.Close();
-            };
+            addTodoItemViewModel.ClosePopup += () => addItemPopup.Close();
 
-            var mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow : null;
+            Window? mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow : null;
             await addItemPopup.ShowDialog(mainWindow);
 
-            if (_addTodoItemViewModel.IsValid)
+            if (addTodoItemViewModel.IsValid)
             {
-                TodoItems.Add(new TodoItemViewModel(_addTodoItemViewModel.CreatedItem));
+                TodoItems.Add(new TodoItemViewModel(addTodoItemViewModel.CreatedItem!));
             }
+        }
+
+        [RelayCommand]
+        public void GetNotDueItems()
+        {
+            _allTodoItems = TodoItems;
+            TodoItems = new(TodoItems.OrderBy(x => x.DueDate).Where(x => x.DueDate >= DateOnly.FromDateTime(DateTime.Now)));
+        }
+
+        [RelayCommand]
+        public void GetAllItems()
+        {
+            TodoItems = _allTodoItems;
         }
     }
 }

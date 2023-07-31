@@ -1,7 +1,6 @@
 ﻿using Avalonia.Data.Converters;
-using System;
-using System.Globalization;
 using Material.Icons;
+using System.Globalization;
 
 namespace TodoApp.Converters;
 
@@ -9,17 +8,9 @@ public class DateToIconKindConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is DateOnly dateOnly)
+        if (value is DateOnly dateOnly && dateOnly >= DateOnly.FromDateTime(DateTime.Now))
         {
-            switch (dateOnly.CompareTo(DateOnly.FromDateTime(DateTime.Now)))
-            {
-                case 1:
-                    return MaterialIconKind.CalendarEditOutline;
-                case 0:
-                    return MaterialIconKind.CalendarEditOutline;
-                default:
-                    return MaterialIconKind.CalendarRemoveOutline;
-            }
+            return MaterialIconKind.CalendarEditOutline;
         }
 
         return MaterialIconKind.CalendarRemoveOutline;

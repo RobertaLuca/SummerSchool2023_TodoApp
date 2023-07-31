@@ -1,21 +1,19 @@
-﻿using System;
-using System.Configuration;
+﻿using System.Configuration;
 
-namespace TodoApp.Helpers
+namespace TodoApp.Helpers;
+
+static public class Utils
 {
-    static public class Utils
+    static public string ReadSetting(string key)
     {
-        static public string ReadSetting(string key)
+        try
         {
-            try
-            {
-                var appSettings = ConfigurationManager.AppSettings;
-                return appSettings[key] ?? "";
-            }
-            catch (ConfigurationErrorsException)
-            {
-                return "";
-            }
+            var appSettings = ConfigurationManager.AppSettings;
+            return appSettings[key] ?? "";
+        }
+        catch (ConfigurationErrorsException)
+        {
+            return "";
         }
     }
 }

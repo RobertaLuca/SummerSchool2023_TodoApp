@@ -1,27 +1,25 @@
-﻿namespace TodoApp.Helper
+﻿using System.Windows.Input;
+
+namespace TodoApp.Helper;
+
+public class DelegateCommand : ICommand
 {
-    using System;
-    using System.Windows.Input;
+    private readonly Action _action;
 
-    public class DelegateCommand : ICommand
+    public DelegateCommand(Action action)
     {
-        private readonly Action _action;
+        _action = action;
+    }
 
-        public DelegateCommand(Action action)
-        {
-            _action = action;
-        }
+    public event EventHandler? CanExecuteChanged;
 
-        public event EventHandler CanExecuteChanged;
+    public bool CanExecute(object? parameter)
+    {
+        return true;
+    }
 
-        public bool CanExecute(object parameter)
-        {
-            return true;
-        }
-
-        public void Execute(object parameter)
-        {
-            _action?.Invoke();
-        }
+    public void Execute(object? parameter)
+    {
+        _action?.Invoke();
     }
 }

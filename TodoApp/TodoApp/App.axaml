@@ -5,6 +5,7 @@
 
 	<Application.Resources>
 		<SolidColorBrush x:Key="Warning">#ff9966</SolidColorBrush>
+		<SolidColorBrush x:Key="Success">#198754</SolidColorBrush>
 	</Application.Resources>
 	
     <Application.Styles>

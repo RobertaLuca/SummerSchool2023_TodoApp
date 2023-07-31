@@ -19,11 +19,9 @@
 
 	<UserControl.Resources>
 		<converters:BoolToColorConverter x:Key="BoolToColorConverter" />
-		<converters:DateToSolidColorConverter x:Key="DateToColorConverter" />
 		<converters:DateToIconKindConverter x:Key="DateToIconKindConverter" />
 		<converters:DateToBoolConverter x:Key="DateToBoolConverter" />
-
-		<SolidColorBrush x:Key="Success">#198754</SolidColorBrush>
+		<converters:DateToSolidColorConverter x:Key="DateToSolidColorConverter" />
 	</UserControl.Resources>
 
 	<UserControl.Styles>
@@ -31,8 +29,8 @@
 			<Setter Property="Width" Value="20"/>
 			<Setter Property="Height" Value="20"/>
 		</Style>
-		
-		<Style Selector="ToggleButton.mark_checkbox:checked > StackPanel > icons|MaterialIcon">
+
+		<Style Selector="ToggleButton.mark_checkbox:checked > icons|MaterialIcon">
 			<Setter Property="Kind" Value="CheckboxMarkedCircleOutline" />
 			<Setter Property="Foreground" Value="{DynamicResource Success}" />
 		</Style>
@@ -49,7 +47,7 @@
 			<Setter Property="Background" Value="Transparent" />
 		</Style>
 
-		<Style Selector="ToggleButton.mark_checkbox:unchecked > StackPanel > icons|MaterialIcon">
+		<Style Selector="ToggleButton.mark_checkbox:unchecked > icons|MaterialIcon">
 			<Setter Property="Kind" Value="CheckboxBlankCircleOutline" />
 			<Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
 		</Style>
@@ -58,71 +56,20 @@
 			<Setter Property="FontSize" Value="18"></Setter>
 			<Setter Property="FontFamily" Value="Bold"></Setter>
 		</Style>
-
-		<Style Selector="TextBlock.h2">
-			<Setter Property="FontSize" Value="14"></Setter>
-			<Setter Property="FontFamily" Value="Normal"></Setter>
-		</Style>
-
-		<Style Selector="Button.hyper_link">
-			<Setter Property="Foreground" Value="{DynamicResource SystemAccentColor}" />
-			<Setter Property="Cursor" Value="Hand" />
-			<Setter Property="BorderThickness" Value="0" />
-			<Setter Property="Background" Value="Transparent" />
-			<Setter Property="Template">
-				<ControlTemplate>
-					<ContentPresenter Content="{TemplateBinding Content}">
-						<ContentPresenter.Styles>
-							<Style Selector="TextBlock">
-								<Setter Property="Foreground" Value="{TemplateBinding Foreground}"/>
-								<Setter Property="FontSize" Value="{TemplateBinding FontSize}"/>
-								<Setter Property="TextDecorations" Value="Underline"/>
-							</Style>
-						</ContentPresenter.Styles>
-					</ContentPresenter>
-				</ControlTemplate>
-			</Setter>
-		</Style>
-
-		<Style Selector="Button.hyper_link:pointerover">
-			<Setter Property="Foreground" Value="Blue" />
-		</Style>
-
-		<Style Selector="Button.hyper_link:pressed">
-			<Setter Property="Foreground" Value="Blue" />
-		</Style>
 	</UserControl.Styles>
 
 	<ScrollViewer>
 		<Grid RowDefinitions="1* 5* 1*">
-
-			<!--<Border
-				Margin="10"
-				Width="400"
-							CornerRadius="10"
-				Height="250"
-				Background="Red"
-				BoxShadow="10 10 20 0.5 blue"
-				ClipToBounds="False">
-
-			</Border>-->
-			
-			<Button Margin="10" Width="40" Height="40" Command="{Binding OpenPopupCommand}">
-				<DockPanel LastChildFill="True">
-					<icons:MaterialIcon Width="40" Height="40" Kind="Add" DockPanel.Dock="Top"/>
-				</DockPanel>
+			<Button Margin="10" Width="40" Height="40" Command="{Binding OpenAddItemPopupCommand}">
+				<icons:MaterialIcon Width="40" Height="40" Kind="Add"/>
 			</Button>
 
 			<Button Margin="10" Width="40" Height="40" Command="{Binding GetNotDueItemsCommand}" HorizontalAlignment="Right">
-				<DockPanel LastChildFill="True">
-					<icons:MaterialIcon Width="40" Height="40" Kind="Filter" DockPanel.Dock="Top"/>
-				</DockPanel>
+				<icons:MaterialIcon Width="40" Height="40" Kind="Filter"/>
 			</Button>
 
 			<Button Margin="10 10 60 10" Width="40" Height="40" Command="{Binding GetAllItemsCommand}" HorizontalAlignment="Right">
-				<DockPanel LastChildFill="True">
-					<icons:MaterialIcon Width="40" Height="40" Kind="Reload" DockPanel.Dock="Top"/>
-				</DockPanel>
+				<icons:MaterialIcon Width="40" Height="40" Kind="Reload"/>
 			</Button>
 
 			<TextBlock HorizontalAlignment="Center" FontSize="25" FontWeight="Bold" Grid.Row="0" Margin="10">Todo List</TextBlock>
@@ -150,18 +97,12 @@
 									Orientation="Horizontal"
 									VerticalAlignment="Center"
 									Spacing="10">
-									<ToggleButton
+									<ToggleButton 
 										Classes="mark_checkbox"
-										Width="35"
-										Height="35"
+										Width="35" Height="35"
 										VerticalAlignment="Center"
 										IsChecked="{Binding IsDone, Mode=TwoWay}">
-										<StackPanel>
-											<icons:MaterialIcon
-												Width="25"
-												Height="25">
-											</icons:MaterialIcon>
-										</StackPanel>
+										<icons:MaterialIcon Width="25" Height="25"></icons:MaterialIcon>
 									</ToggleButton>
 									<TextBlock
 										Classes="h1"
@@ -186,90 +127,40 @@
 									TextTrimming="WordEllipsis"
 									VerticalAlignment="Center">
 								</TextBlock>
-								<Button
-									Grid.Row="5"
-									Grid.Column="1"
-									Classes="hyper_link"
-									VerticalAlignment="Center"
-									HorizontalAlignment="Left">
-									<TextBlock
-										Text="View More" />
-								</Button>
-								<Grid
-									Grid.Row="7"
-									Grid.Column="1"
-									VerticalAlignment="Center">
-									<Button
-										IsEnabled="{Binding DueDate, Converter={StaticResource DateToBoolConverter}}"
-										VerticalAlignment="Center"
-										HorizontalAlignment="Left">
-										<StackPanel
-											Orientation="Horizontal"
-											Spacing="10">
-											<icons:MaterialIcon
-												Foreground="{Binding DueDate, Converter={StaticResource DateToColorConverter}}"
-												VerticalAlignment="Center"
-												Kind="{Binding DueDate, Converter={StaticResource DateToIconKindConverter}}"/>
-											<TextBlock
-												Foreground="{Binding DueDate, Converter={StaticResource DateToColorConverter}}"
-												Text="{Binding DueDate}"
-												VerticalAlignment="Center"
+								<Grid Grid.Row="7" Grid.Column="1" VerticalAlignment="Center">
+									<StackPanel Orientation="Horizontal" Spacing="10">
+										<icons:MaterialIcon
+											Foreground="{Binding DueDate, Converter={StaticResource DateToSolidColorConverter}}"
+											VerticalAlignment="Center"
+											Kind="{Binding DueDate, Converter={StaticResource DateToIconKindConverter}}"/>
+										<TextBlock
+											Foreground="{Binding DueDate, Converter={StaticResource DateToSolidColorConverter}}"
+											Text="{Binding DueDate}"
+											VerticalAlignment="Center"
 											/>
-										</StackPanel>
-									</Button>
-									<Button
-										Width="30"
-										Height="30"
-										VerticalAlignment="Center"
-										HorizontalAlignment="Right"
-										Background="Transparent">
-										<DockPanel LastChildFill="True">
-											<icons:MaterialIcon
-												Kind="DotsHorizontal"
-												DockPanel.Dock="Top"/>
-										</DockPanel>
-										<Button.Flyout>
-											<MenuFlyout
-												ShowMode="TransientWithDismissOnPointerMoveAway"
-												Placement="RightEdgeAlignedTop">
-												<MenuItem
-													Header="Delete"
-													Command="{ReflectionBinding #Repeater.DataContext.DeleteCommand}"
-													CommandParameter="{Binding .}">
-													<MenuItem.Icon>
-														<icons:MaterialIcon
-															Kind="TrashCanOutline">
-														</icons:MaterialIcon>
-													</MenuItem.Icon>
-												</MenuItem>
-											</MenuFlyout>
-										</Button.Flyout>
+									</StackPanel>
+									<Button Width="30" Height="30"
+											VerticalAlignment="Center"
+											HorizontalAlignment="Right"
+											Command="{ReflectionBinding #Repeater.DataContext.DeleteItemCommand}"
+											Background="Transparent"
+											CommandParameter="{Binding}">
+										<icons:MaterialIcon Kind="TrashCanOutline" DockPanel.Dock="Top"/>
 									</Button>
 								</Grid>
-								<Border
-									Grid.Row="9"
-									Grid.Column="1"
-									HorizontalAlignment="Stretch"
-									BorderThickness="1"
-									BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-									VerticalAlignment="Bottom"/>
-								<Button
-									Grid.Row="11"
-									Grid.Column="1"
-									Command="{ReflectionBinding #Repeater.DataContext.CalculateMassCommand}"
-									CommandParameter="{Binding .}"
-									VerticalAlignment="Center"
-									HorizontalAlignment="Center">
-									<StackPanel
-										Orientation="Horizontal"
-										Spacing="10">
-										<icons:MaterialIcon
-											VerticalAlignment="Center"
-											Kind="RobotConfused"/>
-										<TextBlock
-											Text="Ask Chat"
-											VerticalAlignment="Center"
-											/>
+								<Border Grid.Row="9" Grid.Column="1"
+										HorizontalAlignment="Stretch"
+										BorderThickness="1"
+										BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+										VerticalAlignment="Bottom"/>
+								<Button Grid.Row="11" Grid.Column="1"
+										Command="{ReflectionBinding #Repeater.DataContext.CalculateMassCommand}"
+										CommandParameter="{Binding .}"
+										VerticalAlignment="Center"
+										HorizontalAlignment="Center">
+									<StackPanel Orientation="Horizontal" Spacing="10">
+										<icons:MaterialIcon VerticalAlignment="Center" Kind="RobotConfused"/>
+										<TextBlock Text="Ask Chat" VerticalAlignment="Center" />
 									</StackPanel>
 								</Button>
 							</Grid>
