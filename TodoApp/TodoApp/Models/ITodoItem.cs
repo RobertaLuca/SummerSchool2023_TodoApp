@@ -1,13 +1,9 @@
-﻿namespace TodoApp.Models
+﻿namespace TodoApp.Models;
+
+public interface ITodoItem
 {
-    using System;
-
-    internal interface ITodoItem
-    {
-        string Title { get; }
-       
-        string Description { get; }
-
-        DateTime DueDate { get; }
-    }
+    string Title { get; }
+    string Description { get; }
+    DateOnly DueDate { get; }
+    bool IsDone { get; }
 }

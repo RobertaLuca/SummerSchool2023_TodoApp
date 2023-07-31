@@ -1,93 +1,95 @@
-﻿namespace TodoApp.ViewModels
-{
-    using Avalonia;
-    using Avalonia.Controls;
-    using Avalonia.Controls.ApplicationLifetimes;
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Linq;
-    using TodoApp.Helper;
-    using TodoApp.Models;
-    using TodoApp.Views;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using System.Collections.ObjectModel;
+using TodoApp.Helpers;
+using TodoApp.Services;
+using TodoApp.Views;
 
+namespace TodoApp.ViewModels
+{
     public sealed partial class TodoItemsViewModel : ViewModelBase
     {
-        private AddTodoItemViewModel _addTodoItemViewModel;
+        private readonly IChatBotService _chatBotService;
 
         public TodoItemsViewModel()
         {
-            _addTodoItemViewModel = new AddTodoItemViewModel();
-
-            OpenPopupCommand = new DelegateCommand(OpenAddItemPopup);
-            GetNotDueItemsCommand = new DelegateCommand(GetNotDueItems);
-            GetAllItemsCommand = new DelegateCommand(GetAllItems);
+            _chatBotService = new ChatGPTService(Utils.ReadSetting("OPENAI_API_KEY"));
         }
 
-        public AddTodoItemViewModel AddTodoItemViewModel
+        [RelayCommand]
+        private void DeleteItem(TodoItemViewModel? item)
         {
-            get => _addTodoItemViewModel;
-            set => SetProperty(ref _addTodoItemViewModel, value);
+            if (item is not null)
+            {
+                TodoItems.Remove(item);
+            }
         }
+
+        [ObservableProperty]
+        private string? _chatResponse;
 
         // initial implementation
         //public ObservableCollection<TodoItem> TodoItems { get; } = new();
 
         // for filtering
-        private IList<TodoItem> _allTodoItems = new List<TodoItem>();
+        private ObservableCollection<TodoItemViewModel> _allTodoItems = new();
 
-        private ObservableCollection<TodoItem> _todoItems = new ObservableCollection<TodoItem>();
-        public ObservableCollection<TodoItem> TodoItems
+        [ObservableProperty]
+        private ObservableCollection<TodoItemViewModel> _todoItems = new();
+
+        [RelayCommand]
+        private async Task CalculateMass(TodoItemViewModel todoItem)
         {
-            get => _todoItems;
-            set => SetProperty(ref _todoItems, value);
-        }
-
-        public DelegateCommand OpenPopupCommand { get; }
-
-        public DelegateCommand GetNotDueItemsCommand { get; }
-
-        public DelegateCommand GetAllItemsCommand { get; }
-
-        private void RemoveTodoItem(TodoItem item)
-        {
-            TodoItems.Remove(item);
-        }
-
-        private async void OpenAddItemPopup()
-        {
-            var addItemPopup = new Window()
+            if (todoItem.IsDone)
             {
-                Content = new AddTodoItemView { DataContext = AddTodoItemViewModel },
+                ChatResponse = "Congratulations on the completed task!";
+                return;
+            }
+
+            var fullInfo = $"{todoItem.Title} ({todoItem.Description})";
+            fullInfo = Constants.Messages.GetEstimationMessage(fullInfo, todoItem.DueDate);
+
+            ChatResponse = await _chatBotService.GetResponse(fullInfo, ChatGPTService.DefaultModel);
+        }
+
+        [RelayCommand]
+        private async Task OpenAddItemPopup(string lUnused)
+        {
+            AddTodoItemViewModel addTodoItemViewModel = new();
+
+            Window addItemPopup = new()
+            {
+                Content = new AddTodoItemView { DataContext = addTodoItemViewModel },
                 Width = 600,
                 Height = 350,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
             };
 
-            _addTodoItemViewModel.ClosePopup = () =>
-            {
-                addItemPopup.Close();
-            };
+            addTodoItemViewModel.ClosePopup += () => addItemPopup.Close();
 
-            var mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow : null;
+            Window? mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow : null;
             await addItemPopup.ShowDialog(mainWindow);
 
-            if (_addTodoItemViewModel.IsValid)
+            if (addTodoItemViewModel.IsValid)
             {
-                TodoItems.Add(_addTodoItemViewModel.CreatedItem);
+                TodoItems.Add(new TodoItemViewModel(addTodoItemViewModel.CreatedItem!));
             }
         }
 
-        private void GetNotDueItems()
+        [RelayCommand]
+        public void GetNotDueItems()
         {
             _allTodoItems = TodoItems;
-            var notDueItems = TodoItems.OrderBy(item => item.DueDate).Where(item => item.DueDate >= DateTime.Now.Date).ToList();
-            TodoItems = new ObservableCollection<TodoItem>(notDueItems);
+            TodoItems = new(TodoItems.OrderBy(x => x.DueDate).Where(x => x.DueDate >= DateOnly.FromDateTime(DateTime.Now)));
         }
 
-        private void GetAllItems()
+        [RelayCommand]
+        public void GetAllItems()
         {
-            TodoItems = new ObservableCollection<TodoItem>(_allTodoItems);
+            TodoItems = _allTodoItems;
         }
     }
 }

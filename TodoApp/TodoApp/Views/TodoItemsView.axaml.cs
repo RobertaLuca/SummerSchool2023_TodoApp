@@ -1,12 +1,11 @@
-﻿namespace TodoApp.Views
-{
-    using Avalonia.Controls;
+using Avalonia.Controls;
 
-    public partial class TodoItemsView : UserControl
+namespace TodoApp.Views;
+
+public partial class TodoItemsView : UserControl
+{
+    public TodoItemsView()
     {
-        public TodoItemsView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

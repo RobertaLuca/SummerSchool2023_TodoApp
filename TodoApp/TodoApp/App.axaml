@@ -3,8 +3,13 @@
              x:Class="TodoApp.App">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
+	<Application.Resources>
+		<SolidColorBrush x:Key="Warning">#ff9966</SolidColorBrush>
+		<SolidColorBrush x:Key="Success">#198754</SolidColorBrush>
+	</Application.Resources>
+	
     <Application.Styles>
       <StyleInclude Source="avares://Material.Icons.Avalonia/App.xaml" />
-        <FluentTheme Mode="Light"/>
+        <FluentTheme Mode="Light"></FluentTheme>
     </Application.Styles>
 </Application>

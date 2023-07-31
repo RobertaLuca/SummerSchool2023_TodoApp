@@ -1,8 +1,7 @@
-﻿namespace TodoApp.ViewModels
-{
-    using TodoApp.Helper;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-    public class ViewModelBase : ObservableObject
-    {
-    }
+namespace TodoApp.ViewModels;
+
+public class ViewModelBase : ObservableObject
+{
 }

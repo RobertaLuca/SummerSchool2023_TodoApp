@@ -3,65 +3,172 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:TodoApp.ViewModels"
+			 xmlns:converters="using:TodoApp.Converters"
              xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="TodoApp.Views.TodoItemsView"
              x:DataType="vm:TodoItemsViewModel"
-             x:CompileBindings="True">
+             x:CompileBindings="True"
+			 Background="#f9f8f7">
 
-  <Design.DataContext>
-    <!-- This only sets the DataContext for the previewer in an IDE,
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-    <vm:TodoItemsViewModel />
-  </Design.DataContext>
+		<vm:TodoItemsViewModel />
+	</Design.DataContext>
 
-  <ScrollViewer>
-    <Grid RowDefinitions="1*, 5*">
+	<UserControl.Resources>
+		<converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+		<converters:DateToIconKindConverter x:Key="DateToIconKindConverter" />
+		<converters:DateToBoolConverter x:Key="DateToBoolConverter" />
+		<converters:DateToSolidColorConverter x:Key="DateToSolidColorConverter" />
+	</UserControl.Resources>
 
-      <Button Margin="10" Width="40" Height="40" Command="{Binding OpenPopupCommand}">
-        <DockPanel LastChildFill="True">
-          <icons:MaterialIcon Width="40" Height="40" Kind="Add" DockPanel.Dock="Top"/>
-        </DockPanel>
-      </Button>
+	<UserControl.Styles>
+		<Style Selector="icons|MaterialIcon">
+			<Setter Property="Width" Value="20"/>
+			<Setter Property="Height" Value="20"/>
+		</Style>
 
-      <Button Margin="10" Width="40" Height="40" Command="{Binding GetNotDueItemsCommand}" HorizontalAlignment="Right">
-        <DockPanel LastChildFill="True">
-          <icons:MaterialIcon Width="40" Height="40" Kind="Filter" DockPanel.Dock="Top"/>
-        </DockPanel>
-      </Button>
+		<Style Selector="ToggleButton.mark_checkbox:checked > icons|MaterialIcon">
+			<Setter Property="Kind" Value="CheckboxMarkedCircleOutline" />
+			<Setter Property="Foreground" Value="{DynamicResource Success}" />
+		</Style>
 
-      <Button Margin="10 10 60 10" Width="40" Height="40" Command="{Binding GetAllItemsCommand}" HorizontalAlignment="Right">
-        <DockPanel LastChildFill="True">
-          <icons:MaterialIcon Width="40" Height="40" Kind="Reload" DockPanel.Dock="Top"/>
-        </DockPanel>
-      </Button>
+		<Style Selector="ToggleButton.mark_checkbox:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="Background" Value="Transparent" />
+		</Style>
 
-      <TextBlock HorizontalAlignment="Center" FontSize="25" FontWeight="Bold" Grid.Row="0" Margin="10">Todo List</TextBlock>
+		<Style Selector="ToggleButton.mark_checkbox:pressed /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="Background" Value="Transparent" />
+		</Style>
 
-      <ItemsRepeater Items="{Binding TodoItems}" Margin="0, 10, 0, 0" Grid.Row="1" HorizontalAlignment="Center" Name="Repeater">
-        <ItemsRepeater.Layout>
-          <UniformGridLayout ></UniformGridLayout>
-        </ItemsRepeater.Layout>
-        <ItemsRepeater.ItemTemplate>
-          <DataTemplate>
-            <Panel Margin="10" Width="150" Height="200" Background="LightBlue">
-              <Grid RowDefinitions="Auto, Auto, 1*" Margin="5,5,5,5">
+		<Style Selector="ToggleButton.mark_checkbox /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="Background" Value="Transparent" />
+		</Style>
 
-                <Button Grid.Row="0" Width="30" Height="30" HorizontalAlignment="Right">
-                  <DockPanel LastChildFill="True">
-                    <icons:MaterialIcon Width="30" Height="30" Kind="Remove" DockPanel.Dock="Top"/>
-                  </DockPanel>
-                </Button>
-                
-                <TextBlock Text="{Binding Title}" Grid.Row="0" Margin="0,0,0,5" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Center" TextWrapping="Wrap"></TextBlock>
-                <TextBlock Text="{Binding Description}" Grid.Row="1" FontStyle="Italic" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap"></TextBlock>
-                <TextBlock Text="{Binding DueDate, StringFormat={}{0:yyyy/MM/dd}}" Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Center"></TextBlock>
-              </Grid>
-            </Panel>
-          </DataTemplate>
-        </ItemsRepeater.ItemTemplate>
-      </ItemsRepeater>
+		<Style Selector="ToggleButton.mark_checkbox:unchecked > icons|MaterialIcon">
+			<Setter Property="Kind" Value="CheckboxBlankCircleOutline" />
+			<Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
+		</Style>
 
-    </Grid>
-  </ScrollViewer>
+		<Style Selector="TextBlock.h1">
+			<Setter Property="FontSize" Value="18"></Setter>
+			<Setter Property="FontFamily" Value="Bold"></Setter>
+		</Style>
+	</UserControl.Styles>
+
+	<ScrollViewer>
+		<Grid RowDefinitions="1* 5* 1*">
+			<Button Margin="10" Width="40" Height="40" Command="{Binding OpenAddItemPopupCommand}">
+				<icons:MaterialIcon Width="40" Height="40" Kind="Add"/>
+			</Button>
+
+			<Button Margin="10" Width="40" Height="40" Command="{Binding GetNotDueItemsCommand}" HorizontalAlignment="Right">
+				<icons:MaterialIcon Width="40" Height="40" Kind="Filter"/>
+			</Button>
+
+			<Button Margin="10 10 60 10" Width="40" Height="40" Command="{Binding GetAllItemsCommand}" HorizontalAlignment="Right">
+				<icons:MaterialIcon Width="40" Height="40" Kind="Reload"/>
+			</Button>
+
+			<TextBlock HorizontalAlignment="Center" FontSize="25" FontWeight="Bold" Grid.Row="0" Margin="10">Todo List</TextBlock>
+			<TextBlock HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="25" FontWeight="Bold" Grid.Row="2" Margin="10"
+					   Text="{Binding ChatResponse}"></TextBlock>
+			<ItemsRepeater Items="{Binding TodoItems}" Grid.Row="1" HorizontalAlignment="Center" Name="Repeater">
+				<ItemsRepeater.Layout>
+					<UniformGridLayout></UniformGridLayout>
+				</ItemsRepeater.Layout>
+				<ItemsRepeater.ItemTemplate>
+					<DataTemplate x:DataType="vm:TodoItemViewModel">
+						<Border
+							Margin="10 5 10 5"
+							CornerRadius="10"
+							Background="White"
+							BoxShadow="10 10 20 0.5 #bfbfbf"
+							Width="400"
+							Height="250">
+							<Grid
+							RowDefinitions="10 2* 5 2* 5 1* 5 1* 5 0.5* 5 1* 10"
+							ColumnDefinitions="10 1* 10">
+								<StackPanel
+									Grid.Row="1"
+									Grid.Column="1"
+									Orientation="Horizontal"
+									VerticalAlignment="Center"
+									Spacing="10">
+									<ToggleButton 
+										Classes="mark_checkbox"
+										Width="35" Height="35"
+										VerticalAlignment="Center"
+										IsChecked="{Binding IsDone, Mode=TwoWay}">
+										<icons:MaterialIcon Width="25" Height="25"></icons:MaterialIcon>
+									</ToggleButton>
+									<TextBlock
+										Classes="h1"
+										Text="{Binding Title}"
+										HorizontalAlignment="Stretch"
+										MaxWidth="350"
+										MaxLines="2"
+										TextWrapping="Wrap"
+										TextTrimming="WordEllipsis"
+										VerticalAlignment="Center">
+									</TextBlock>
+								</StackPanel>
+								<TextBlock
+									Grid.Row="3"
+									Grid.Column="1"
+									Classes="h1"
+									Text="{Binding Description}"
+									HorizontalAlignment="Stretch"
+									MaxWidth="380"
+									MaxLines="4"
+									TextWrapping="Wrap"
+									TextTrimming="WordEllipsis"
+									VerticalAlignment="Center">
+								</TextBlock>
+								<Grid Grid.Row="7" Grid.Column="1" VerticalAlignment="Center">
+									<StackPanel Orientation="Horizontal" Spacing="10">
+										<icons:MaterialIcon
+											Foreground="{Binding DueDate, Converter={StaticResource DateToSolidColorConverter}}"
+											VerticalAlignment="Center"
+											Kind="{Binding DueDate, Converter={StaticResource DateToIconKindConverter}}"/>
+										<TextBlock
+											Foreground="{Binding DueDate, Converter={StaticResource DateToSolidColorConverter}}"
+											Text="{Binding DueDate}"
+											VerticalAlignment="Center"
+											/>
+									</StackPanel>
+									<Button Width="30" Height="30"
+											VerticalAlignment="Center"
+											HorizontalAlignment="Right"
+											Command="{ReflectionBinding #Repeater.DataContext.DeleteItemCommand}"
+											Background="Transparent"
+											CommandParameter="{Binding}">
+										<icons:MaterialIcon Kind="TrashCanOutline" DockPanel.Dock="Top"/>
+									</Button>
+								</Grid>
+								<Border Grid.Row="9" Grid.Column="1"
+										HorizontalAlignment="Stretch"
+										BorderThickness="1"
+										BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+										VerticalAlignment="Bottom"/>
+								<Button Grid.Row="11" Grid.Column="1"
+										Command="{ReflectionBinding #Repeater.DataContext.CalculateMassCommand}"
+										CommandParameter="{Binding .}"
+										VerticalAlignment="Center"
+										HorizontalAlignment="Center">
+									<StackPanel Orientation="Horizontal" Spacing="10">
+										<icons:MaterialIcon VerticalAlignment="Center" Kind="RobotConfused"/>
+										<TextBlock Text="Ask Chat" VerticalAlignment="Center" />
+									</StackPanel>
+								</Button>
+							</Grid>
+						</Border>
+					</DataTemplate>
+				</ItemsRepeater.ItemTemplate>
+			</ItemsRepeater>
+
+		</Grid>
+	</ScrollViewer>
 </UserControl>
