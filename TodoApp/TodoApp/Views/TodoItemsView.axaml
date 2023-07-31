@@ -8,7 +8,8 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="TodoApp.Views.TodoItemsView"
              x:DataType="vm:TodoItemsViewModel"
-             x:CompileBindings="True">
+             x:CompileBindings="True"
+			 Background="#f9f8f7">
 
 	<Design.DataContext>
 		<!-- This only sets the DataContext for the previewer in an IDE,
@@ -18,11 +19,94 @@
 
 	<UserControl.Resources>
 		<converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+		<converters:DateToSolidColorConverter x:Key="DateToColorConverter" />
+		<converters:DateToIconKindConverter x:Key="DateToIconKindConverter" />
+		<converters:DateToBoolConverter x:Key="DateToBoolConverter" />
+
+		<SolidColorBrush x:Key="Success">#198754</SolidColorBrush>
 	</UserControl.Resources>
 
-	<ScrollViewer>
-		<Grid RowDefinitions="1*, 5*">
+	<UserControl.Styles>
+		<Style Selector="icons|MaterialIcon">
+			<Setter Property="Width" Value="20"/>
+			<Setter Property="Height" Value="20"/>
+		</Style>
+		
+		<Style Selector="ToggleButton.mark_checkbox:checked > StackPanel > icons|MaterialIcon">
+			<Setter Property="Kind" Value="CheckboxMarkedCircleOutline" />
+			<Setter Property="Foreground" Value="{DynamicResource Success}" />
+		</Style>
 
+		<Style Selector="ToggleButton.mark_checkbox:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="Background" Value="Transparent" />
+		</Style>
+
+		<Style Selector="ToggleButton.mark_checkbox:pressed /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="Background" Value="Transparent" />
+		</Style>
+
+		<Style Selector="ToggleButton.mark_checkbox /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="Background" Value="Transparent" />
+		</Style>
+
+		<Style Selector="ToggleButton.mark_checkbox:unchecked > StackPanel > icons|MaterialIcon">
+			<Setter Property="Kind" Value="CheckboxBlankCircleOutline" />
+			<Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
+		</Style>
+
+		<Style Selector="TextBlock.h1">
+			<Setter Property="FontSize" Value="18"></Setter>
+			<Setter Property="FontFamily" Value="Bold"></Setter>
+		</Style>
+
+		<Style Selector="TextBlock.h2">
+			<Setter Property="FontSize" Value="14"></Setter>
+			<Setter Property="FontFamily" Value="Normal"></Setter>
+		</Style>
+
+		<Style Selector="Button.hyper_link">
+			<Setter Property="Foreground" Value="{DynamicResource SystemAccentColor}" />
+			<Setter Property="Cursor" Value="Hand" />
+			<Setter Property="BorderThickness" Value="0" />
+			<Setter Property="Background" Value="Transparent" />
+			<Setter Property="Template">
+				<ControlTemplate>
+					<ContentPresenter Content="{TemplateBinding Content}">
+						<ContentPresenter.Styles>
+							<Style Selector="TextBlock">
+								<Setter Property="Foreground" Value="{TemplateBinding Foreground}"/>
+								<Setter Property="FontSize" Value="{TemplateBinding FontSize}"/>
+								<Setter Property="TextDecorations" Value="Underline"/>
+							</Style>
+						</ContentPresenter.Styles>
+					</ContentPresenter>
+				</ControlTemplate>
+			</Setter>
+		</Style>
+
+		<Style Selector="Button.hyper_link:pointerover">
+			<Setter Property="Foreground" Value="Blue" />
+		</Style>
+
+		<Style Selector="Button.hyper_link:pressed">
+			<Setter Property="Foreground" Value="Blue" />
+		</Style>
+	</UserControl.Styles>
+
+	<ScrollViewer>
+		<Grid RowDefinitions="1* 5* 1*">
+
+			<!--<Border
+				Margin="10"
+				Width="400"
+							CornerRadius="10"
+				Height="250"
+				Background="Red"
+				BoxShadow="10 10 20 0.5 blue"
+				ClipToBounds="False">
+
+			</Border>-->
+			
 			<Button Margin="10" Width="40" Height="40" Command="{Binding OpenPopupCommand}">
 				<DockPanel LastChildFill="True">
 					<icons:MaterialIcon Width="40" Height="40" Kind="Add" DockPanel.Dock="Top"/>
@@ -42,56 +126,154 @@
 			</Button>
 
 			<TextBlock HorizontalAlignment="Center" FontSize="25" FontWeight="Bold" Grid.Row="0" Margin="10">Todo List</TextBlock>
-
-			<ItemsRepeater Items="{Binding TodoItems}" Margin="0, 10, 0, 0" Grid.Row="1" HorizontalAlignment="Center" Name="Repeater">
+			<TextBlock HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="25" FontWeight="Bold" Grid.Row="2" Margin="10"
+					   Text="{Binding ChatResponse}"></TextBlock>
+			<ItemsRepeater Items="{Binding TodoItems}" Grid.Row="1" HorizontalAlignment="Center" Name="Repeater">
 				<ItemsRepeater.Layout>
-					<UniformGridLayout ></UniformGridLayout>
+					<UniformGridLayout></UniformGridLayout>
 				</ItemsRepeater.Layout>
 				<ItemsRepeater.ItemTemplate>
-					<DataTemplate>
-						<Panel Margin="10" Width="200" Background="{Binding IsDone, Converter={StaticResource BoolToColorConverter}}">
-							<Grid RowDefinitions="Auto, Auto, 1*" Margin="5,5,5,5">
-
-								<Button
-									Grid.Row="0"
-									Width="30"
-									Height="30"
-									HorizontalAlignment="Right"
-									Command="{ReflectionBinding #Repeater.DataContext.DeleteCommand}"
-									CommandParameter="{Binding .}">
-									<DockPanel LastChildFill="True">
-										<icons:MaterialIcon Width="30" Height="30" Kind="Remove" DockPanel.Dock="Top"/>
-									</DockPanel>
-								</Button>
-								<Button 
-									Grid.Row="2"
-									Width="30"
-									Height="30"
-									HorizontalAlignment="Right"
-									Command="{ReflectionBinding #Repeater.DataContext.CalculateMassCommand}"
-									CommandParameter="{Binding .}">
-									<DockPanel LastChildFill="True">
-										<icons:MaterialIcon Width="30" Height="30" Kind="RobotConfused" DockPanel.Dock="Bottom"/>
-									</DockPanel>
-								</Button>
-
-								<Button
+					<DataTemplate x:DataType="vm:TodoItemViewModel">
+						<Border
+							Margin="10 5 10 5"
+							CornerRadius="10"
+							Background="White"
+							BoxShadow="10 10 20 0.5 #bfbfbf"
+							Width="400"
+							Height="250">
+							<Grid
+							RowDefinitions="10 2* 5 2* 5 1* 5 1* 5 0.5* 5 1* 10"
+							ColumnDefinitions="10 1* 10">
+								<StackPanel
 									Grid.Row="1"
-									Width="30"
-									Height="30"
-									HorizontalAlignment="Right"
-									Command="{ReflectionBinding #Repeater.DataContext.SetDoneCommand}"
-									CommandParameter="{Binding .}">
-									<DockPanel LastChildFill="True">
-										<icons:MaterialIcon Width="30" Height="30" Kind="Done" DockPanel.Dock="Bottom"/>
-									</DockPanel>
+									Grid.Column="1"
+									Orientation="Horizontal"
+									VerticalAlignment="Center"
+									Spacing="10">
+									<ToggleButton
+										Classes="mark_checkbox"
+										Width="35"
+										Height="35"
+										VerticalAlignment="Center"
+										IsChecked="{Binding IsDone, Mode=TwoWay}">
+										<StackPanel>
+											<icons:MaterialIcon
+												Width="25"
+												Height="25">
+											</icons:MaterialIcon>
+										</StackPanel>
+									</ToggleButton>
+									<TextBlock
+										Classes="h1"
+										Text="{Binding Title}"
+										HorizontalAlignment="Stretch"
+										MaxWidth="350"
+										MaxLines="2"
+										TextWrapping="Wrap"
+										TextTrimming="WordEllipsis"
+										VerticalAlignment="Center">
+									</TextBlock>
+								</StackPanel>
+								<TextBlock
+									Grid.Row="3"
+									Grid.Column="1"
+									Classes="h1"
+									Text="{Binding Description}"
+									HorizontalAlignment="Stretch"
+									MaxWidth="380"
+									MaxLines="4"
+									TextWrapping="Wrap"
+									TextTrimming="WordEllipsis"
+									VerticalAlignment="Center">
+								</TextBlock>
+								<Button
+									Grid.Row="5"
+									Grid.Column="1"
+									Classes="hyper_link"
+									VerticalAlignment="Center"
+									HorizontalAlignment="Left">
+									<TextBlock
+										Text="View More" />
 								</Button>
-
-								<TextBlock Text="{Binding Title}" Grid.Row="0" Margin="0,0,0,5" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Center" TextWrapping="Wrap"></TextBlock>
-								<TextBlock Text="{Binding Description}" Grid.Row="1" FontStyle="Italic" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap"></TextBlock>
-								<TextBlock Text="{Binding DueDate, StringFormat={}{0:yyyy/MM/dd}}" Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Center"></TextBlock>
+								<Grid
+									Grid.Row="7"
+									Grid.Column="1"
+									VerticalAlignment="Center">
+									<Button
+										IsEnabled="{Binding DueDate, Converter={StaticResource DateToBoolConverter}}"
+										VerticalAlignment="Center"
+										HorizontalAlignment="Left">
+										<StackPanel
+											Orientation="Horizontal"
+											Spacing="10">
+											<icons:MaterialIcon
+												Foreground="{Binding DueDate, Converter={StaticResource DateToColorConverter}}"
+												VerticalAlignment="Center"
+												Kind="{Binding DueDate, Converter={StaticResource DateToIconKindConverter}}"/>
+											<TextBlock
+												Foreground="{Binding DueDate, Converter={StaticResource DateToColorConverter}}"
+												Text="{Binding DueDate}"
+												VerticalAlignment="Center"
+											/>
+										</StackPanel>
+									</Button>
+									<Button
+										Width="30"
+										Height="30"
+										VerticalAlignment="Center"
+										HorizontalAlignment="Right"
+										Background="Transparent">
+										<DockPanel LastChildFill="True">
+											<icons:MaterialIcon
+												Kind="DotsHorizontal"
+												DockPanel.Dock="Top"/>
+										</DockPanel>
+										<Button.Flyout>
+											<MenuFlyout
+												ShowMode="TransientWithDismissOnPointerMoveAway"
+												Placement="RightEdgeAlignedTop">
+												<MenuItem
+													Header="Delete"
+													Command="{ReflectionBinding #Repeater.DataContext.DeleteCommand}"
+													CommandParameter="{Binding .}">
+													<MenuItem.Icon>
+														<icons:MaterialIcon
+															Kind="TrashCanOutline">
+														</icons:MaterialIcon>
+													</MenuItem.Icon>
+												</MenuItem>
+											</MenuFlyout>
+										</Button.Flyout>
+									</Button>
+								</Grid>
+								<Border
+									Grid.Row="9"
+									Grid.Column="1"
+									HorizontalAlignment="Stretch"
+									BorderThickness="1"
+									BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+									VerticalAlignment="Bottom"/>
+								<Button
+									Grid.Row="11"
+									Grid.Column="1"
+									Command="{ReflectionBinding #Repeater.DataContext.CalculateMassCommand}"
+									CommandParameter="{Binding .}"
+									VerticalAlignment="Center"
+									HorizontalAlignment="Center">
+									<StackPanel
+										Orientation="Horizontal"
+										Spacing="10">
+										<icons:MaterialIcon
+											VerticalAlignment="Center"
+											Kind="RobotConfused"/>
+										<TextBlock
+											Text="Ask Chat"
+											VerticalAlignment="Center"
+											/>
+									</StackPanel>
+								</Button>
 							</Grid>
-						</Panel>
+						</Border>
 					</DataTemplate>
 				</ItemsRepeater.ItemTemplate>
 			</ItemsRepeater>

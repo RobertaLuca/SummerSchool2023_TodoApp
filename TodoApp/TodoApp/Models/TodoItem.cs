@@ -8,15 +8,16 @@
 
         public string Description { get; set; }
 
-        public DateTime DueDate { get; set; }
+        public DateOnly DueDate { get; set; }
 
         public bool IsDone { get; set; }
 
-        public TodoItem(string title, string description, DateTime dueDate)
+        public TodoItem(string title, string description, DateOnly dueDate, bool isDone = false)
         {
             Title = title;
             Description = description;
             DueDate = dueDate;
+            IsDone = isDone;
         }
     }
 }

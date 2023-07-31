@@ -10,7 +10,7 @@
         private string _description = string.Empty;
         private DateTimeOffset? _dueDate;
         private bool _isValid = false;
-        private TodoItem _createdItem;
+        private TodoItem? _createdItem;
 
         public AddTodoItemViewModel()
         {
@@ -44,7 +44,7 @@
             } 
         }
 
-        public TodoItem CreatedItem
+        public TodoItem? CreatedItem
         {
             get => _createdItem;
             set
@@ -55,7 +55,7 @@
 
         public DelegateCommand SaveItemCommand { get; }
 
-        public Action ClosePopup { get; set; }
+        public Action? ClosePopup { get; set; }
 
         private void SaveItem()
         {
@@ -67,7 +67,7 @@
             else
             {
                 _isValid = true;
-                CreatedItem = new TodoItem(Title, Description, DueDate.Value.DateTime);
+                CreatedItem = new TodoItem(Title, Description, DateOnly.FromDateTime(DueDate.Value.Date));
             }
 
             ClosePopup?.Invoke();

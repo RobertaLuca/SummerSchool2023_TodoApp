@@ -2,13 +2,13 @@
 {
     using System;
 
-    internal interface ITodoItem
+    public interface ITodoItem
     {
         string Title { get; }
        
         string Description { get; }
 
-        DateTime DueDate { get; }
+        DateOnly DueDate { get; }
         bool IsDone { get; }
     }
 }
