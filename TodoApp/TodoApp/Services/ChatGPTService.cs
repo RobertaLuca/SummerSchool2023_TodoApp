@@ -3,22 +3,21 @@ using System.Text.Json;
 
 namespace TodoApp.Services;
 
-public class ChatGPTService : IChatBotService, IDisposable
+public class ChatGPTService : IChatBotService
 {
     private readonly string _apiKey;
-    private readonly RestClient _client;
 
     public static string DefaultModel => "gpt-3.5-turbo";
 
     public ChatGPTService(string apiKey)
     {
         _apiKey = apiKey;
-        // Initialize the RestClient with the ChatGPT API endpoint
-        _client = new RestClient("https://api.openai.com/v1/chat/completions");
     }
 
     public async Task<string> GetResponse(string message, string model, Func<string, string>? postProcess = null)
     {
+        // Initialize the RestClient with the ChatGPT API endpoint
+        using RestClient client = new RestClient("https://api.openai.com/v1/chat/completions");
         if (!Validate(message, out string errorMessage))
         {
             return errorMessage;
@@ -57,7 +56,7 @@ public class ChatGPTService : IChatBotService, IDisposable
             request.AddJsonBody(JsonSerializer.Serialize(requestBody));
 
             // Execute the request and receive the response
-            var response = await _client.ExecuteAsync(request);
+            var response = await client.ExecuteAsync(request);
 
             var json = JsonDocument.Parse(response.Content ?? string.Empty);
             var response_message = json.RootElement.GetProperty("choices")[0].GetProperty("message").GetProperty("content").GetString() ?? string.Empty;
@@ -74,19 +73,13 @@ public class ChatGPTService : IChatBotService, IDisposable
     private static bool Validate(string message, out string error)
     {
         bool isValid = !string.IsNullOrWhiteSpace(message);
-        error = "";
-
-        if (!isValid)
-        {
-            error = "Sorry, I didn't receive any input. Please try again!";
-        }
-
+        error = isValid ? "" : "Sorry, I didn't receive any input. Please try again!";
         return isValid;
     }
 
-    public void Dispose()
-    {
-        _client?.Dispose();
-        GC.SuppressFinalize(this);
-    }
+    //public void Dispose()
+    //{
+    //    _client?.Dispose();
+    //    GC.SuppressFinalize(this);
+    //}
 }

@@ -18,7 +18,6 @@
 	</Design.DataContext>
 
 	<UserControl.Resources>
-		<converters:BoolToColorConverter x:Key="BoolToColorConverter" />
 		<converters:DateToIconKindConverter x:Key="DateToIconKindConverter" />
 		<converters:DateToBoolConverter x:Key="DateToBoolConverter" />
 		<converters:DateToSolidColorConverter x:Key="DateToSolidColorConverter" />
@@ -59,37 +58,110 @@
 	</UserControl.Styles>
 
 	<ScrollViewer>
-		<Grid RowDefinitions="1* 5* 1*">
-			<Button Margin="10" Width="40" Height="40" Command="{Binding OpenAddItemPopupCommand}">
-				<icons:MaterialIcon Width="40" Height="40" Kind="Add"/>
-			</Button>
+		<Grid RowDefinitions="1* 1* 5* 1* 1*">
+			<Grid
+				ColumnDefinitions="* 3* *"
+				Margin="5"
+				Grid.Row="1"
+				HorizontalAlignment="Stretch">
+				<StackPanel
+					Spacing="10"
+					Orientation="Horizontal">
+					<Button Width="40" Height="40" Command="{Binding OpenAddItemPopupCommand}">
+						<icons:MaterialIcon Width="40" Height="40" Kind="Add"/>
+					</Button>
+				</StackPanel>
 
-			<Button Margin="10" Width="40" Height="40" Command="{Binding GetNotDueItemsCommand}" HorizontalAlignment="Right">
-				<icons:MaterialIcon Width="40" Height="40" Kind="Filter"/>
-			</Button>
+				<TextBox
+					Name="SearchInput"
+					Grid.Column="1"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					VerticalContentAlignment="Center"
+					Height="40"
+					Watermark="Generate To-Do List"
+					KeyDown="SearchInput_KeyDown"
+					>
+					<TextBox.InnerLeftContent>
+						<StackPanel VerticalAlignment="Center" Margin="5 0 0 0">
+							<icons:MaterialIcon
+								Width="30"
+								Height="30"
+								Kind="RobotExcitedOutline"
+								VerticalAlignment="Center"/>
+						</StackPanel>
+					</TextBox.InnerLeftContent>
 
-			<Button Margin="10 10 60 10" Width="40" Height="40" Command="{Binding GetAllItemsCommand}" HorizontalAlignment="Right">
-				<icons:MaterialIcon Width="40" Height="40" Kind="Reload"/>
-			</Button>
+					<TextBox.InnerRightContent>
+						<StackPanel VerticalAlignment="Center" Margin="0 0 5 0">
+							<Button
+								Name="GenerateButton"
+								Height="30"
+								Background="Transparent"
+								Command="{Binding GenerateTasksCommand}"
+								CommandParameter="{ReflectionBinding #SearchInput.Text}">
+								<StackPanel Orientation="Horizontal" Spacing="10">
+									<icons:MaterialIcon
+										Width="30"
+										Height="30"
+										VerticalAlignment="Center"
+										Kind="Magnify"/>
+								</StackPanel>
+							</Button>
+						</StackPanel>
+					</TextBox.InnerRightContent>
+				</TextBox>
 
-			<TextBlock HorizontalAlignment="Center" FontSize="25" FontWeight="Bold" Grid.Row="0" Margin="10">Todo List</TextBlock>
-			<TextBlock HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="25" FontWeight="Bold" Grid.Row="2" Margin="10"
+				<StackPanel
+					Spacing="10"
+					Grid.Column="2"
+					Orientation="Horizontal"
+					HorizontalAlignment="Right">
+					<Button Width="40" Height="40" Command="{Binding GetNotDueItemsCommand}">
+						<icons:MaterialIcon Width="40" Height="40" Kind="Filter"/>
+					</Button>
+
+					<Button Width="40" Height="40" Command="{Binding GetAllItemsCommand}">
+						<icons:MaterialIcon Width="40" Height="40" Kind="Reload"/>
+					</Button>
+				</StackPanel>
+			</Grid>
+
+			<StackPanel HorizontalAlignment="Center" Margin="10">
+				<TextBlock FontSize="25" HorizontalAlignment="Center" FontWeight="Bold">To-Do List</TextBlock>
+				<TextBlock Classes="h1" HorizontalAlignment="Center">Get organized and stay on top of your tasks with the power of AI.</TextBlock>
+			</StackPanel>
+			<TextBlock Classes="h1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="3" Margin="10"
 					   Text="{Binding ChatResponse}"></TextBlock>
-			<ItemsRepeater Items="{Binding TodoItems}" Grid.Row="1" HorizontalAlignment="Center" Name="Repeater">
+			<ProgressBar
+				IsIndeterminate="True"
+				IsVisible="{Binding BackgroundTask}"
+				Grid.Row="4"
+				Margin="10"
+				VerticalAlignment="Bottom"></ProgressBar>
+			<ItemsRepeater 
+				Items="{Binding TodoItems}"
+				Margin="0 20 0 0"
+				Grid.Row="2"
+				HorizontalAlignment="Center"
+				ClipToBounds="False"
+				Name="Repeater">
 				<ItemsRepeater.Layout>
-					<UniformGridLayout></UniformGridLayout>
+					<UniformGridLayout 
+						MinColumnSpacing="15"
+						MinRowSpacing="15"
+						ItemsJustification="SpaceEvenly"></UniformGridLayout>
 				</ItemsRepeater.Layout>
 				<ItemsRepeater.ItemTemplate>
 					<DataTemplate x:DataType="vm:TodoItemViewModel">
 						<Border
-							Margin="10 5 10 5"
 							CornerRadius="10"
 							Background="White"
 							BoxShadow="10 10 20 0.5 #bfbfbf"
-							Width="400"
+							MinWidth="400"
 							Height="250">
 							<Grid
-							RowDefinitions="10 2* 5 2* 5 1* 5 1* 5 0.5* 5 1* 10"
+							RowDefinitions="10 2* 5 2* 5 1* 5 1* 5 0.5* 10"
 							ColumnDefinitions="10 1* 10">
 								<StackPanel
 									Grid.Row="1"
@@ -108,7 +180,7 @@
 										Classes="h1"
 										Text="{Binding Title}"
 										HorizontalAlignment="Stretch"
-										MaxWidth="350"
+										MaxWidth="320"
 										MaxLines="2"
 										TextWrapping="Wrap"
 										TextTrimming="WordEllipsis"
@@ -127,7 +199,7 @@
 									TextTrimming="WordEllipsis"
 									VerticalAlignment="Center">
 								</TextBlock>
-								<Grid Grid.Row="7" Grid.Column="1" VerticalAlignment="Center">
+								<Grid Grid.Row="5" Grid.Column="1" VerticalAlignment="Center">
 									<StackPanel Orientation="Horizontal" Spacing="10">
 										<icons:MaterialIcon
 											Foreground="{Binding DueDate, Converter={StaticResource DateToSolidColorConverter}}"
@@ -145,15 +217,18 @@
 											Command="{ReflectionBinding #Repeater.DataContext.DeleteItemCommand}"
 											Background="Transparent"
 											CommandParameter="{Binding}">
-										<icons:MaterialIcon Kind="TrashCanOutline" DockPanel.Dock="Top"/>
+										<icons:MaterialIcon
+											Foreground="{DynamicResource SystemErrorTextColor}"
+											Kind="TrashCanOutline"
+											DockPanel.Dock="Top"/>
 									</Button>
 								</Grid>
-								<Border Grid.Row="9" Grid.Column="1"
+								<Border Grid.Row="7" Grid.Column="1"
 										HorizontalAlignment="Stretch"
 										BorderThickness="1"
 										BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
 										VerticalAlignment="Bottom"/>
-								<Button Grid.Row="11" Grid.Column="1"
+								<Button Grid.Row="9" Grid.Column="1"
 										Command="{ReflectionBinding #Repeater.DataContext.CalculateMassCommand}"
 										CommandParameter="{Binding .}"
 										VerticalAlignment="Center"

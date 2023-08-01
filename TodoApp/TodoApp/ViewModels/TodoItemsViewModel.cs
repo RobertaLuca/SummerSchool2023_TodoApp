@@ -4,7 +4,9 @@ using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using TodoApp.Helpers;
+using TodoApp.Models;
 using TodoApp.Services;
 using TodoApp.Views;
 
@@ -17,6 +19,8 @@ namespace TodoApp.ViewModels
         public TodoItemsViewModel()
         {
             _chatBotService = new ChatGPTService(Utils.ReadSetting("OPENAI_API_KEY"));
+
+            BackgroundTask = false;
         }
 
         [RelayCommand]
@@ -31,6 +35,9 @@ namespace TodoApp.ViewModels
         [ObservableProperty]
         private string? _chatResponse;
 
+        [ObservableProperty]
+        private bool? _backgroundTask;
+
         // initial implementation
         //public ObservableCollection<TodoItem> TodoItems { get; } = new();
 
@@ -43,6 +50,7 @@ namespace TodoApp.ViewModels
         [RelayCommand]
         private async Task CalculateMass(TodoItemViewModel todoItem)
         {
+            BackgroundTask = true;
             if (todoItem.IsDone)
             {
                 ChatResponse = "Congratulations on the completed task!";
@@ -53,10 +61,35 @@ namespace TodoApp.ViewModels
             fullInfo = Constants.Messages.GetEstimationMessage(fullInfo, todoItem.DueDate);
 
             ChatResponse = await _chatBotService.GetResponse(fullInfo, ChatGPTService.DefaultModel);
+            BackgroundTask = false;
         }
 
         [RelayCommand]
-        private async Task OpenAddItemPopup(string lUnused)
+        private async Task GenerateTasks(string topic)
+        {
+            BackgroundTask = true;
+            if (string.IsNullOrEmpty(topic))
+            {             
+                return;
+            }
+            string fullInfo = Constants.Messages.GetTaskListMessage(topic, 5);
+            var response = await _chatBotService.GetResponse(fullInfo, ChatGPTService.DefaultModel);
+
+            var tasks = response.ExtractTasks();
+            foreach (var task in tasks)
+            {
+                TodoItems.Add(new(new TodoItem
+                {
+                    Title = task.Title,
+                    Description = task.Description,
+                    DueDate = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
+                }));
+            }
+            BackgroundTask = false;
+        }
+
+        [RelayCommand]
+        private async Task OpenAddItemPopup()
         {
             AddTodoItemViewModel addTodoItemViewModel = new();
 
@@ -66,6 +99,7 @@ namespace TodoApp.ViewModels
                 Width = 600,
                 Height = 350,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                //Icon = new WindowIcon("/Assets/avalonia-logo.ico")
             };
 
             addTodoItemViewModel.ClosePopup += () => addItemPopup.Close();
