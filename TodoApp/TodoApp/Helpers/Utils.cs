@@ -3,8 +3,10 @@ using System.Text.RegularExpressions;
 
 namespace TodoApp.Helpers;
 
-static public class Utils
+static public partial class Utils
 {
+    private static Regex pattern = MyRegex();
+
     static public string ReadSetting(string key)
     {
         try
@@ -23,10 +25,10 @@ static public class Utils
         List<(string Title, string Description)> tasks = new List<(string Title, string Description)>();
 
         // Define the regular expression pattern to match the titles and descriptions
-        string pattern = @"\d+\.\s+Title:\s+(.+?)\s+Description:\s+(.+?)(?=\s*\d+\.|$)";
+        
 
         // Create a regular expression object and find matches in the input string
-        MatchCollection matches = Regex.Matches(input, pattern, RegexOptions.Singleline);
+        MatchCollection matches = pattern.Matches(input);
 
         // Process each match and extract the title and description
         foreach (Match match in matches)
@@ -41,4 +43,7 @@ static public class Utils
 
         return tasks;
     }
+
+    [GeneratedRegex("\\d+\\.\\s+Title:\\s+(.+?)\\s+Description:\\s+(.+?)(?=\\s*\\d+\\.|$)", RegexOptions.Compiled)]
+    private static partial Regex MyRegex();
 }

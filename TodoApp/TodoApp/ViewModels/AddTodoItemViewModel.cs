@@ -39,15 +39,5 @@ public sealed partial class AddTodoItemViewModel : ViewModelBase
         }
 
         ClosePopup?.Invoke();
-
-        ResetFields();
-    }
-
-    private void ResetFields()
-    {
-        Title = string.Empty;
-        Description = string.Empty;
-        DueDate = null;
-        IsValid = false;
     }
 }
