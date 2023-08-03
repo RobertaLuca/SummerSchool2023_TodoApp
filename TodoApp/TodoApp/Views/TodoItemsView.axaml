@@ -9,6 +9,7 @@
              x:Class="TodoApp.Views.TodoItemsView"
              x:DataType="vm:TodoItemsViewModel"
              x:CompileBindings="True"
+			 Focusable="True"
 			 Background="#f9f8f7">
 
 	<Design.DataContext>
@@ -33,7 +34,7 @@
 			<Setter Property="Kind" Value="CheckboxMarkedCircleOutline" />
 			<Setter Property="Foreground" Value="{DynamicResource Success}" />
 		</Style>
-
+		
 		<Style Selector="ToggleButton.mark_checkbox:pointerover /template/ ContentPresenter#PART_ContentPresenter">
 			<Setter Property="Background" Value="Transparent" />
 		</Style>
@@ -48,6 +49,11 @@
 
 		<Style Selector="ToggleButton.mark_checkbox:unchecked > icons|MaterialIcon">
 			<Setter Property="Kind" Value="CheckboxBlankCircleOutline" />
+			<Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
+		</Style>
+
+		<Style Selector="ToggleButton.mark_checkbox:unchecked:pointerover > icons|MaterialIcon">
+			<Setter Property="Kind" Value="CheckboxMarkedCircleOutline" />
 			<Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
 		</Style>
 
