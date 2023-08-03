@@ -1,9 +1,11 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Platform;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DynamicData;
+using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using TodoApp.Helpers;
@@ -29,7 +31,6 @@ public sealed partial class TodoItemsViewModel : ViewModelBase
     {
         if (item is not null)
         {
-            _allTodoItems.Remove(item);
             TodoItems.Remove(item);
         }
     }
@@ -99,13 +100,15 @@ public sealed partial class TodoItemsViewModel : ViewModelBase
     {
         AddTodoItemViewModel addTodoItemViewModel = new();
 
+        var assets = AvaloniaLocator.Current.GetService<IAssetLoader>();
+        var icon = assets?.Open(new Uri("avares://TodoApp/Assets/avalonia-logo.ico"));
         Window addItemPopup = new()
         {
             Content = new AddTodoItemView { DataContext = addTodoItemViewModel },
             Width = 600,
             Height = 350,
             WindowStartupLocation = WindowStartupLocation.CenterOwner,
-            //Icon = new WindowIcon("/Assets/avalonia-logo.ico")
+            Icon = new WindowIcon(icon)
         };
 
         addTodoItemViewModel.ClosePopup += () => addItemPopup.Close();
