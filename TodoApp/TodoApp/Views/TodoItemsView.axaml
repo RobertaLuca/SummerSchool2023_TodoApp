@@ -22,6 +22,7 @@
 		<converters:DateToIconKindConverter x:Key="DateToIconKindConverter" />
 		<converters:DateToBoolConverter x:Key="DateToBoolConverter" />
 		<converters:DateToSolidColorConverter x:Key="DateToSolidColorConverter" />
+		<converters:BoolToStrikethrough x:Key="BoolToStrikethroughConverter" />
 	</UserControl.Resources>
 
 	<UserControl.Styles>
@@ -188,6 +189,7 @@
 										HorizontalAlignment="Stretch"
 										MaxWidth="320"
 										MaxLines="2"
+										TextDecorations="{Binding IsDone, Converter={StaticResource BoolToStrikethroughConverter}}"
 										TextWrapping="Wrap"
 										TextTrimming="WordEllipsis"
 										VerticalAlignment="Center">
@@ -201,6 +203,7 @@
 									HorizontalAlignment="Stretch"
 									MaxWidth="380"
 									MaxLines="4"
+									TextDecorations="{Binding IsDone, Converter={StaticResource BoolToStrikethroughConverter}}"
 									TextWrapping="Wrap"
 									TextTrimming="WordEllipsis"
 									VerticalAlignment="Center">
