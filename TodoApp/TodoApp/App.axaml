@@ -9,7 +9,8 @@
 	</Application.Resources>
 	
     <Application.Styles>
-      <StyleInclude Source="avares://Material.Icons.Avalonia/App.xaml" />
+        <StyleInclude Source="avares://Material.Icons.Avalonia/App.xaml" />
+		<StyleInclude Source="/Styles/TodoStyles.axaml"></StyleInclude>
         <FluentTheme Mode="Light"></FluentTheme>
     </Application.Styles>
 </Application>

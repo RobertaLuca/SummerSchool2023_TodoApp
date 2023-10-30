@@ -27,15 +27,15 @@ public partial class App : Application
             .AddSingleton<TodoItemsViewModel>()
             .AddSingleton<TodoItemsView>()
             .AddSingleton<MainWindowViewModel>()
-            .AddScope<TodoChatWindowViewModel>()
+            .AddScope<ChatViewModel>()
             .AddSingleton<ChatWindow>();
 
         PageService pageService = serviceCollection.GetService<PageService>()
             .RegisterPage<TodoItemsView, TodoItemsViewModel>("Todo Items")
-            .RegisterPage<ChatWindow, TodoChatWindowViewModel>("Chat");
+            .RegisterPage<ChatWindow, ChatViewModel>("Chat");
 
         NavigationService navigationService = serviceCollection.GetService<NavigationService>();
-        navigationService.CurrentPageType = pageService.Pages[typeof(TodoItemsView)];
+        navigationService.CurrentPageData = pageService.Pages[typeof(TodoItemsViewModel)];
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

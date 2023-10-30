@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:TodoApp.ViewModels"
+			 xmlns:core="using:Core"
 			 xmlns:services="using:TodoApp.Services"
 			 xmlns:converters="using:TodoApp.Converters"
 			 xmlns:mock="using:TodoApp.Design"
@@ -18,6 +19,9 @@
 		<vm:TodoItemsViewModel>
 			<x:Arguments>
 				<mock:DesignChatService/>
+				<core:NavigationService/>
+				<services:CurrentTodoService/>
+				<core:PageService/>
 			</x:Arguments>
 		</vm:TodoItemsViewModel>
 	</Design.DataContext>
@@ -30,11 +34,6 @@
 	</UserControl.Resources>
 
 	<UserControl.Styles>
-		<Style Selector="icons|MaterialIcon">
-			<Setter Property="Width" Value="20"/>
-			<Setter Property="Height" Value="20"/>
-		</Style>
-
 		<Style Selector="ToggleButton.mark_checkbox:checked > icons|MaterialIcon">
 			<Setter Property="Kind" Value="CheckboxMarkedCircleOutline" />
 			<Setter Property="Foreground" Value="{DynamicResource Success}" />
@@ -61,16 +60,11 @@
 			<Setter Property="Kind" Value="CheckboxMarkedCircleOutline" />
 			<Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
 		</Style>
-
-		<Style Selector="TextBlock.h1">
-			<Setter Property="FontSize" Value="18"></Setter>
-			<Setter Property="FontFamily" Value="Bold"></Setter>
-		</Style>
 	</UserControl.Styles>
 
 	<ScrollViewer>
 		<Grid RowDefinitions="1* 1* 5* 1* 1*">
-			<Grid
+			<Grid 
 				ColumnDefinitions="* 3* *"
 				Margin="5"
 				Grid.Row="1"
@@ -257,7 +251,6 @@
 					</DataTemplate>
 				</ItemsRepeater.ItemTemplate>
 			</ItemsRepeater>
-
 		</Grid>
 	</ScrollViewer>
 </UserControl>

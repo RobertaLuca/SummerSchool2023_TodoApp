@@ -18,9 +18,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 		_navigationService = navigationService;
 		_navigationService.CurrentPageChanged += CurrentPageChanged;
 
-		if (_navigationService.CurrentPageType is not null)
+		if (_navigationService.CurrentPageData is not null)
 		{
-			CurrentPageChanged(_navigationService.CurrentPageType);
+			CurrentPageChanged(_navigationService.CurrentPageData);
 		}
 	}
 
@@ -31,7 +31,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 			IsActiveChanged(false, Content.DataContext);
 		}
 
-		var control = _serviceCollection.GetService(pageData.Type!) as UserControl ?? throw new Exception("null control");
+		var control = _serviceCollection.GetService(pageData.ViewType!) as UserControl ?? throw new Exception("null control");
 		control.DataContext = _serviceCollection.GetService(pageData.ViewModelType!);
 		Content = control;
 

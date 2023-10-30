@@ -6,11 +6,11 @@ public class PageService
 
     public PageService RegisterPage<P, VM>(string pageName, string? icon = null, bool showSidePanel = true)
     {
-        Pages.Add(typeof(P), new PageData()
+        Pages.Add(typeof(VM), new PageData()
         {
             Name = pageName,
             ViewModelType = typeof(VM),
-            Type = typeof(P),
+            ViewType = typeof(P),
             Icon = icon,
             ShowSidePanel = showSidePanel
         });

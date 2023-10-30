@@ -1,0 +1,21 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia">
+	<Design.PreviewWith>
+		<Border Padding="20">
+			<!-- Add Controls for Previewer Here -->
+		</Border>
+	</Design.PreviewWith>
+
+	<!-- Add Styles Here -->
+
+	<Style Selector="TextBlock.h1">
+		<Setter Property="FontSize" Value="18"></Setter>
+		<Setter Property="FontFamily" Value="Bold"></Setter>
+	</Style>
+
+	<Style Selector="icons|MaterialIcon">
+		<Setter Property="Width" Value="20"/>
+		<Setter Property="Height" Value="20"/>
+	</Style>
+</Styles>

@@ -5,26 +5,31 @@
 			 xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
 			 xmlns:vm="using:TodoApp.ViewModels"
 			 xmlns:models="using:TodoApp.Models"
+			 xmlns:services="using:TodoApp.Services"
 			 xmlns:mock="using:TodoApp.Design"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="TodoApp.Views.ChatWindow"
-			 x:DataType="vm:TodoChatWindowViewModel"
+			 x:DataType="vm:ChatViewModel"
 			 x:CompileBindings="True">
 	<Design.DataContext>
-		<vm:TodoChatWindowViewModel>
+		<vm:ChatViewModel>
 			<x:Arguments>
-				<models:TodoItem Title="Mock title" Description="Mock description"/>
+				<services:CurrentTodoService>
+					<services:CurrentTodoService.CurrentTodo>
+						<models:TodoItem Title="I want to learn C#" Description="I really wanna"/>
+					</services:CurrentTodoService.CurrentTodo>
+				</services:CurrentTodoService>					
 				<mock:DesignChatService/>
 			</x:Arguments>
-		</vm:TodoChatWindowViewModel>
+		</vm:ChatViewModel>
 	</Design.DataContext>
 
 	<Grid ColumnDefinitions="*, 2*" RowDefinitions="*, Auto">
 		<StackPanel Spacing="5" Margin="10">
-			<TextBlock>Todo Title</TextBlock>
+			<TextBlock Classes="h1">Todo Title</TextBlock>
 			<TextBlock Text="{Binding TodoItem.Title}"/>
 
-			<TextBlock>Todo Description</TextBlock>
+			<TextBlock Classes="h1">Todo Description</TextBlock>
 			<TextBlock Text="{Binding TodoItem.Description}"/>
 
 			<Button HorizontalAlignment="Stretch" Command="{Binding AskForHelpCommand}">

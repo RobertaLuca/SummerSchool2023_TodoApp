@@ -5,14 +5,14 @@ using TodoApp.Services;
 
 namespace TodoApp.ViewModels;
 
-public sealed partial class TodoChatWindowViewModel : ViewModelBase
+public sealed partial class ChatViewModel : ViewModelBase
 {
 	private readonly IChatBotService _chatBotService;
 
 	[ObservableProperty]
 	private string _chatResponse = string.Empty;
 
-	public TodoChatWindowViewModel(CurrentTodoService currentTodoService, IChatBotService chatBotService)
+	public ChatViewModel(CurrentTodoService currentTodoService, IChatBotService chatBotService)
 	{
 		TodoItem = currentTodoService.CurrentTodo;
 		_chatBotService = chatBotService;

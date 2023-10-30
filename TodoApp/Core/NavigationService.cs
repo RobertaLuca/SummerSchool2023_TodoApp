@@ -7,13 +7,13 @@ public sealed partial class NavigationService : ObservableObject
 	[ObservableProperty]
 	private bool _isNavigationAllowed = true;
 
-	private PageData? _currentPageType;
+	private PageData? _currentPageData;
 
 	public event Action<PageData>? CurrentPageChanged;
 
-	public PageData? CurrentPageType
+	public PageData? CurrentPageData
 	{
-		get => _currentPageType;
+		get => _currentPageData;
 
 		set
 		{
@@ -22,7 +22,7 @@ public sealed partial class NavigationService : ObservableObject
 				return;
 			}
 
-			_currentPageType = value;
+			_currentPageData = value;
 
 			CurrentPageChanged?.Invoke(value);
 		}

@@ -19,6 +19,7 @@ public sealed partial class TodoItemsViewModel : ViewModelBase
 	private readonly NavigationService _navigationService;
 	private readonly CurrentTodoService _currentTodoService;
 	private readonly PageService _pageService;
+
 	[ObservableProperty] private string? _chatResponse;
 	[ObservableProperty] private bool? _backgroundTask;
 
@@ -141,6 +142,6 @@ public sealed partial class TodoItemsViewModel : ViewModelBase
 		};
 
 		_currentTodoService.CurrentTodo = item;
-		_navigationService.CurrentPageType = _pageService.Pages[typeof(ChatWindow)];
+		_navigationService.CurrentPageData = _pageService.Pages[typeof(ChatViewModel)];
 	}
 }
