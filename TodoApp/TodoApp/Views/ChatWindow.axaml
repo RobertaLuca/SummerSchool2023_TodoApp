@@ -12,6 +12,7 @@
              x:Class="TodoApp.Views.ChatWindow"
 			 x:DataType="vm:ChatViewModel"
 			 x:CompileBindings="True">
+	
 	<Design.DataContext>
 		<vm:ChatViewModel>
 			<x:Arguments>
@@ -19,42 +20,44 @@
 					<services:CurrentTodoService.CurrentTodo>
 						<models:TodoItem Title="I want to learn C#" Description="I really wanna"/>
 					</services:CurrentTodoService.CurrentTodo>
-				</services:CurrentTodoService>					
+				</services:CurrentTodoService>
 				<mock:DesignChatService/>
 			</x:Arguments>
 		</vm:ChatViewModel>
 	</Design.DataContext>
-		<SplitView IsPaneOpen="True" DisplayMode="CompactInline">
-			<SplitView.Pane>
-				<StackPanel Spacing="5" Margin="10">
-					<TextBlock Classes="h1">Todo Title</TextBlock>
-					<TextBlock Text="{Binding TodoItem.Title}"/>
 
-					<TextBlock Classes="h1">Todo Description</TextBlock>
-					<TextBlock Text="{Binding TodoItem.Description}"/>
 
-					<Border Classes="horizontalDivider"/>
+	<SplitView IsPaneOpen="True" DisplayMode="CompactInline">
+		<SplitView.Pane>
+			<StackPanel Spacing="5" Margin="10">
+				<TextBlock Classes="h1">Todo Title</TextBlock>
+				<TextBlock Text="{Binding TodoItem.Title}"/>
 
-					<TextBlock Classes="h1">System Prompt</TextBlock>
+				<TextBlock Classes="h1">Todo Description</TextBlock>
+				<TextBlock Text="{Binding TodoItem.Description}"/>
 
-					<TextBox Text="{Binding ChatBotService.SystemPrompt}" TextWrapping="Wrap"/>
+				<Border Classes="horizontalDivider"/>
 
-					<Border Classes="horizontalDivider"/>
-					<Button HorizontalAlignment="Stretch" Command="{Binding AskForHelpCommand}">
-						<views:IconText Icon="RobotOutline" Text="Ask for help"></views:IconText>
-					</Button>
-				</StackPanel>
-			</SplitView.Pane>
+				<TextBlock Classes="h1">System Prompt</TextBlock>
 
-			<DockPanel>
-				<StackPanel Spacing="5" DockPanel.Dock="Top">
-					<TextBlock HorizontalAlignment="Center">Chat help</TextBlock>
+				<TextBox Text="{Binding ChatBotService.SystemPrompt}" TextWrapping="Wrap"/>
 
-					<TextBlock Text="{Binding ChatResponse}"></TextBlock>
-				</StackPanel>
+				<Border Classes="horizontalDivider"/>
+				<Button HorizontalAlignment="Stretch" Command="{Binding AskForHelpCommand}">
+					<views:IconText Icon="RobotOutline" Text="Ask for help"></views:IconText>
+				</Button>
+			</StackPanel>
+		</SplitView.Pane>
 
-				<ProgressBar DockPanel.Dock="Bottom" Margin="10" IsIndeterminate="True" IsVisible="{Binding AskForHelpCommand.IsRunning}"/>
-			</DockPanel>
-		</SplitView>
+		<DockPanel>
+			<StackPanel Spacing="5" DockPanel.Dock="Top">
+				<TextBlock HorizontalAlignment="Center">Chat help</TextBlock>
+
+				<TextBlock Text="{Binding ChatResponse}"></TextBlock>
+			</StackPanel>
+
+			<ProgressBar DockPanel.Dock="Bottom" Margin="10" IsIndeterminate="True" IsVisible="{Binding AskForHelpCommand.IsRunning}"/>
+		</DockPanel>
+	</SplitView>
 </UserControl>
 
