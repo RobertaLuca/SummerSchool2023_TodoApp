@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:TodoApp.ViewModels"
 			 xmlns:core="using:Core"
+			 xmlns:views="using:TodoApp.Views"
 			 xmlns:services="using:TodoApp.Services"
 			 xmlns:converters="using:TodoApp.Converters"
 			 xmlns:mock="using:TodoApp.Design"
@@ -241,10 +242,7 @@
 										CommandParameter="{Binding .}"
 										VerticalAlignment="Center"
 										HorizontalAlignment="Center">
-									<StackPanel Orientation="Horizontal" Spacing="10">
-										<icons:MaterialIcon VerticalAlignment="Center" Kind="OpenInApp"/>
-										<TextBlock Text="Open Todo" VerticalAlignment="Center" />
-									</StackPanel>
+									<views:IconText Text="Open Todo" Icon="OpenInApp"></views:IconText>
 								</Button>
 							</Grid>
 						</Border>
