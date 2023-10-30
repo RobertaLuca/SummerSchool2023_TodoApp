@@ -1,34 +1,46 @@
 ﻿using Avalonia;
 using Avalonia.Logging;
+using Serilog;
+using TodoApp.Services;
 
 namespace TodoApp.Desktop;
 
 internal class Program
 {
-    [STAThread]
-    public static void Main(string[] args)
-    {
-        TaskScheduler.UnobservedTaskException += UnobservedTaskException;
+	[STAThread]
+	public static void Main(string[] args)
+	{
+		TaskScheduler.UnobservedTaskException += UnobservedTaskException;
 
-        try
-        {
-            BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
-        }
-        catch (Exception)
-        {
-        }
-        finally
-        {
-        }
-    }
+		Log.Logger = new LoggerConfiguration()
+			.WriteTo.File("logs.txt")
+			.CreateLogger();
 
-    private static void UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
-    {
-        throw e.Exception;
-    }
+		try
+		{
+			BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+		}
+		catch (Exception e)
+		{
+			Log.Logger.Error(e, $"Exception caught in main: {e.Message}");
+		}
+		finally
+		{
+			Log.CloseAndFlush();
+		}
+	}
 
-    // Avalonia configuration, don't remove; also used by visual designer.
-    public static AppBuilder BuildAvaloniaApp()
+	private static void UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
+	{
+		Log.Logger.Error(e.Exception.InnerException, $"Unobserved task exception: {e.Exception.InnerException}");
+		Log.CloseAndFlush();
+
+		// throws the exception to terminate the process
+		throw e.Exception;
+	}
+
+	// Avalonia configuration, don't remove; also used by visual designer.
+	public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .LogToTrace(LogEventLevel.Debug, LogArea.Property, LogArea.Layout);

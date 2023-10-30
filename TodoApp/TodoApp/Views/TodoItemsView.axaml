@@ -2,8 +2,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:TodoApp.ViewModels"
+             xmlns:vm="using:TodoApp.ViewModels"
+			 xmlns:services="using:TodoApp.Services"
 			 xmlns:converters="using:TodoApp.Converters"
+			 xmlns:mock="using:TodoApp.Design"
              xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="TodoApp.Views.TodoItemsView"
@@ -13,9 +15,11 @@
 			 Background="#f9f8f7">
 
 	<Design.DataContext>
-		<!-- This only sets the DataContext for the previewer in an IDE,
-         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-		<vm:TodoItemsViewModel />
+		<vm:TodoItemsViewModel>
+			<x:Arguments>
+				<mock:DesignChatService/>
+			</x:Arguments>
+		</vm:TodoItemsViewModel>
 	</Design.DataContext>
 
 	<UserControl.Resources>
@@ -166,7 +170,8 @@
 							Background="White"
 							BoxShadow="10 10 20 0.5 #bfbfbf"
 							MinWidth="400"
-							Height="250">
+							Height="250"
+							>
 							<Grid
 							RowDefinitions="10 2* 5 2* 5 1* 5 1* 5 1* 10"
 							ColumnDefinitions="10 1* 10">
@@ -223,7 +228,7 @@
 									<Button Width="30" Height="30"
 											VerticalAlignment="Center"
 											HorizontalAlignment="Right"
-											Command="{ReflectionBinding #Repeater.DataContext.DeleteItemCommand}"
+											Command="{Binding DeleteCommand}"
 											Background="Transparent"
 											CommandParameter="{Binding}">
 										<icons:MaterialIcon
@@ -238,13 +243,13 @@
 										BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
 										VerticalAlignment="Bottom"/>
 								<Button Grid.Row="9" Grid.Column="1"
-										Command="{ReflectionBinding #Repeater.DataContext.CalculateMassCommand}"
+										Command="{Binding OpenCommand}"
 										CommandParameter="{Binding .}"
 										VerticalAlignment="Center"
 										HorizontalAlignment="Center">
 									<StackPanel Orientation="Horizontal" Spacing="10">
-										<icons:MaterialIcon VerticalAlignment="Center" Kind="RobotConfused"/>
-										<TextBlock Text="Ask Chat" VerticalAlignment="Center" />
+										<icons:MaterialIcon VerticalAlignment="Center" Kind="OpenInApp"/>
+										<TextBlock Text="Open Todo" VerticalAlignment="Center" />
 									</StackPanel>
 								</Button>
 							</Grid>
