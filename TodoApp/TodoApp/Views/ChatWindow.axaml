@@ -58,7 +58,7 @@
 			</StackPanel>
 		</SplitView.Pane>
 
-		<DockPanel VerticalAlignment="Stretch">
+		<DockPanel VerticalAlignment="Stretch" Margin="0 10 0 0">
 			<StackPanel Spacing="5" DockPanel.Dock="Top">
 				<TextBlock HorizontalAlignment="Center" Classes="h1">Chat help</TextBlock>
 				

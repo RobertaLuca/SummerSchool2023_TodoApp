@@ -10,7 +10,8 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="TodoApp"
 		x:DataType="vm:MainWindowViewModel"
-        x:CompileBindings="True">
+        x:CompileBindings="True"
+		ExtendClientAreaToDecorationsHint="True">
 
 	<Design.DataContext>
 		<vm:MainWindowViewModel>

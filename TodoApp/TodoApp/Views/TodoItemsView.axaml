@@ -13,8 +13,7 @@
              x:Class="TodoApp.Views.TodoItemsView"
              x:DataType="vm:TodoItemsViewModel"
              x:CompileBindings="True"
-			 Focusable="True"
-			 Background="#f9f8f7">
+			 Focusable="True">
 
 	<Design.DataContext>
 		<vm:TodoItemsViewModel>
@@ -75,6 +74,9 @@
 					Orientation="Horizontal">
 					<Button Width="40" Height="40" Command="{Binding OpenAddItemPopupCommand}">
 						<icons:MaterialIcon Width="40" Height="40" Kind="Add"/>
+					</Button>
+					<Button Width="40" Height="40" Command="{Binding GoToOptionsCommand}">
+						<icons:MaterialIcon Kind="Settings" Width="35" Height="35"></icons:MaterialIcon>
 					</Button>
 				</StackPanel>
 
@@ -153,17 +155,13 @@
 				ClipToBounds="False"
 				Name="Repeater">
 				<ItemsRepeater.Layout>
-					<UniformGridLayout 
-						MinColumnSpacing="15"
-						MinRowSpacing="15"
-						ItemsJustification="SpaceEvenly"></UniformGridLayout>
+					<UniformGridLayout MinColumnSpacing="15" MinRowSpacing="15" ItemsJustification="SpaceEvenly"/>
 				</ItemsRepeater.Layout>
 				<ItemsRepeater.ItemTemplate>
 					<DataTemplate x:DataType="vm:TodoItemViewModel">
 						<Border
 							CornerRadius="10"
-							Background="White"
-							BoxShadow="10 10 20 0.5 #bfbfbf"
+							BoxShadow="10 10 20 0.5 Gray"
 							MinWidth="400"
 							Height="250"
 							>

@@ -28,11 +28,14 @@ public partial class App : Application
             .AddSingleton<TodoItemsView>()
             .AddSingleton<MainWindowViewModel>()
             .AddScope<ChatViewModel>()
-            .AddSingleton<ChatWindow>();
+            .AddSingleton<ChatWindow>()
+            .AddSingleton<OptionsViewModel>()
+            .AddSingleton<OptionsPage>();
 
         PageService pageService = serviceCollection.GetService<PageService>()
             .RegisterPage<TodoItemsView, TodoItemsViewModel>("Todo Items")
-            .RegisterPage<ChatWindow, ChatViewModel>("Chat");
+            .RegisterPage<ChatWindow, ChatViewModel>("Chat")
+            .RegisterPage<OptionsPage, OptionsViewModel>("Options");
 
         NavigationService navigationService = serviceCollection.GetService<NavigationService>();
         navigationService.CurrentPageData = pageService.Pages[typeof(TodoItemsViewModel)];

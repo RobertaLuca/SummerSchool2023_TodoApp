@@ -122,7 +122,7 @@ public sealed partial class TodoItemsViewModel : ViewModelBase
 	}
 
 	[RelayCommand]
-	public void GetAllItems()
+	private void GetAllItems()
 	{
 		//TodoItems.AddRange(_allTodoItems);
 
@@ -130,7 +130,7 @@ public sealed partial class TodoItemsViewModel : ViewModelBase
 	}
 
 	[RelayCommand]
-	public void OpenTodo(TodoItemViewModel vm)
+	private void OpenTodo(TodoItemViewModel vm)
 	{
 		TodoItem item = new()
 		{ 
@@ -141,5 +141,11 @@ public sealed partial class TodoItemsViewModel : ViewModelBase
 
 		_currentTodoService.CurrentTodo = item;
 		_navigationService.CurrentPageData = _pageService.Pages[typeof(ChatViewModel)];
+	}
+
+	[RelayCommand]
+	private void GoToOptions()
+	{
+		_navigationService.CurrentPageData = _pageService.Pages[typeof(OptionsViewModel)];
 	}
 }
