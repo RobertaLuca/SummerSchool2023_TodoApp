@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+			 xmlns:md="clr-namespace:Markdown.Avalonia;assembly=Markdown.Avalonia"
 			 xmlns:vm="using:TodoApp.ViewModels"
 			 xmlns:models="using:TodoApp.Models"
 			 xmlns:services="using:TodoApp.Services"
@@ -49,14 +50,14 @@
 			</StackPanel>
 		</SplitView.Pane>
 
-		<DockPanel>
+		<DockPanel VerticalAlignment="Stretch">
 			<StackPanel Spacing="5" DockPanel.Dock="Top">
-				<TextBlock HorizontalAlignment="Center">Chat help</TextBlock>
-
-				<TextBlock Text="{Binding ChatResponse}"></TextBlock>
+				<TextBlock HorizontalAlignment="Center" Classes="h1">Chat help</TextBlock>
+				
+				<md:MarkdownScrollViewer Markdown="{Binding ChatResponse}"/>
 			</StackPanel>
 
-			<ProgressBar DockPanel.Dock="Bottom" Margin="10" IsIndeterminate="True" IsVisible="{Binding AskForHelpCommand.IsRunning}"/>
+			<ProgressBar DockPanel.Dock="Bottom" VerticalAlignment="Bottom" Margin="10" IsIndeterminate="True" IsVisible="{Binding AskForHelpCommand.IsRunning}" />
 		</DockPanel>
 	</SplitView>
 </UserControl>
