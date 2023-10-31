@@ -5,7 +5,6 @@ using Avalonia.Platform;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Core;
-using DynamicData;
 using System.Collections.ObjectModel;
 using TodoApp.Models;
 using TodoApp.Services;
@@ -91,16 +90,15 @@ public sealed partial class TodoItemsViewModel : ViewModelBase
 	private async Task OpenAddItemPopup()
 	{
 		AddTodoItemViewModel addTodoItemViewModel = new();
-
-		var assets = AvaloniaLocator.Current.GetService<IAssetLoader>();
-		var icon = assets?.Open(new Uri("avares://TodoApp/Assets/avalonia-logo.ico"));
+		
+		var icon = new Uri("avares://TodoApp/Assets/avalonia-logo.ico");
 		Window addItemPopup = new()
 		{
 			Content = new AddTodoItemView { DataContext = addTodoItemViewModel },
 			Width = 600,
 			Height = 350,
 			WindowStartupLocation = WindowStartupLocation.CenterOwner,
-			Icon = new WindowIcon(icon)
+			Icon = new WindowIcon(AssetLoader.Open(icon))
 		};
 
 		addTodoItemViewModel.ClosePopup += () => addItemPopup.Close();
@@ -120,13 +118,13 @@ public sealed partial class TodoItemsViewModel : ViewModelBase
 	{
 		_allTodoItems = TodoItems.OrderBy(x => x.DueDate).Where(x => x.DueDate <= DateOnly.FromDateTime(DateTime.Now)).ToList();
 
-		TodoItems.RemoveMany(_allTodoItems);
+		//TodoItems.RemoveMany(_allTodoItems);
 	}
 
 	[RelayCommand]
 	public void GetAllItems()
 	{
-		TodoItems.AddRange(_allTodoItems);
+		//TodoItems.AddRange(_allTodoItems);
 
 		_allTodoItems.Clear();
 	}
