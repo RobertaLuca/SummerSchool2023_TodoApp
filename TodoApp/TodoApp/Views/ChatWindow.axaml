@@ -8,6 +8,7 @@
 			 xmlns:models="using:TodoApp.Models"
 			 xmlns:services="using:TodoApp.Services"
 			 xmlns:mock="using:TodoApp.Design"
+			 xmlns:core="using:Core"
 			 xmlns:views="using:TodoApp.Views"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="TodoApp.Views.ChatWindow"
@@ -23,6 +24,8 @@
 					</services:CurrentTodoService.CurrentTodo>
 				</services:CurrentTodoService>
 				<mock:DesignChatService/>
+				<core:NavigationService/>
+				<core:PageService/>
 			</x:Arguments>
 		</vm:ChatViewModel>
 	</Design.DataContext>
@@ -46,6 +49,11 @@
 				<Border Classes="horizontalDivider"/>
 				<Button HorizontalAlignment="Stretch" Command="{Binding AskForHelpCommand}">
 					<views:IconText Icon="RobotOutline" Text="Ask for help"></views:IconText>
+				</Button>
+
+
+				<Button HorizontalAlignment="Stretch" Command="{Binding GoBackCommand}">
+					<views:IconText Icon="ArrowBack" Text="Main Page"/>
 				</Button>
 			</StackPanel>
 		</SplitView.Pane>
