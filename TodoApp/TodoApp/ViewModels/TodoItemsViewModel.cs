@@ -17,17 +17,15 @@ public sealed partial class TodoItemsViewModel : ViewModelBase
 	private readonly IChatBotService _chatBotService;
 	private readonly NavigationService _navigationService;
 	private readonly CurrentTodoService _currentTodoService;
-	private readonly PageService _pageService;
 
 	[ObservableProperty] private string? _chatResponse;
 	[ObservableProperty] private bool? _backgroundTask;
 
-	public TodoItemsViewModel(IChatBotService chatBotService, NavigationService navigationService, CurrentTodoService currentTodoService, PageService pageService)
+	public TodoItemsViewModel(IChatBotService chatBotService, NavigationService navigationService, CurrentTodoService currentTodoService)
 	{
 		_chatBotService = chatBotService;
 		_navigationService = navigationService;
 		_currentTodoService = currentTodoService;
-		_pageService = pageService;
 		BackgroundTask = false;
 	}
 
@@ -140,12 +138,12 @@ public sealed partial class TodoItemsViewModel : ViewModelBase
 		};
 
 		_currentTodoService.CurrentTodo = item;
-		_navigationService.CurrentPageData = _pageService.Pages[typeof(ChatViewModel)];
+		_navigationService.Navigate<ChatViewModel>();
 	}
 
 	[RelayCommand]
 	private void GoToOptions()
 	{
-		_navigationService.CurrentPageData = _pageService.Pages[typeof(OptionsViewModel)];
+		_navigationService.Navigate<OptionsViewModel>();
 	}
 }

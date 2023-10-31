@@ -11,11 +11,13 @@ public sealed partial class NavigationService : ObservableObject
 
 	public event Action<PageData>? CurrentPageChanged;
 
+	public Dictionary<Type, PageData> Pages { get; } = new();
+
 	public PageData? CurrentPageData
 	{
 		get => _currentPageData;
 
-		set
+		private set
 		{
 			if (value is null)
 			{
@@ -26,5 +28,24 @@ public sealed partial class NavigationService : ObservableObject
 
 			CurrentPageChanged?.Invoke(value);
 		}
+	}
+
+	public NavigationService RegisterPage<P, VM>(string pageName, string? icon = null, bool showSidePanel = true)
+	{
+		Pages.Add(typeof(VM), new PageData()
+		{
+			Name = pageName,
+			ViewModelType = typeof(VM),
+			ViewType = typeof(P),
+			Icon = icon,
+			ShowSidePanel = showSidePanel
+		});
+
+		return this;
+	}
+
+	public void Navigate<T>()
+	{
+		CurrentPageData = Pages[typeof(T)];
 	}
 }

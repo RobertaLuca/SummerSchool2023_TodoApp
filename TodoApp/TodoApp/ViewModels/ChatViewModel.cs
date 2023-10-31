@@ -9,18 +9,16 @@ namespace TodoApp.ViewModels;
 public sealed partial class ChatViewModel : ViewModelBase
 {
 	private readonly NavigationService _navigationService;
-	private readonly PageService _pageService;
 
 	[ObservableProperty]
 	private string _chatResponse = string.Empty;
 
-	public ChatViewModel(CurrentTodoService currentTodoService, IChatBotService chatBotService, NavigationService navigationService, PageService pageService)
+	public ChatViewModel(CurrentTodoService currentTodoService, IChatBotService chatBotService, NavigationService navigationService)
 	{
 		TodoItem = currentTodoService.CurrentTodo;
         ChatBotService = chatBotService;
 
 		_navigationService = navigationService;
-		_pageService = pageService;
 	}
 
 	public TodoItem? TodoItem { get; }
@@ -38,6 +36,6 @@ public sealed partial class ChatViewModel : ViewModelBase
 	[RelayCommand]
 	private void GoBack()
 	{
-		_navigationService.CurrentPageData = _pageService.Pages[typeof(TodoItemsViewModel)];
+		_navigationService.Navigate<TodoItemsViewModel>();
 	}
 }

@@ -25,7 +25,6 @@
 				</services:CurrentTodoService>
 				<mock:DesignChatService/>
 				<core:NavigationService/>
-				<core:PageService/>
 			</x:Arguments>
 		</vm:ChatViewModel>
 	</Design.DataContext>

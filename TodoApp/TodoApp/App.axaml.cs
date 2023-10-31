@@ -20,7 +20,6 @@ public partial class App : Application
         ServiceCollection serviceCollection = new();
         serviceCollection.AddSingleton(serviceCollection)
             .AddSingleton<NavigationService>()
-            .AddSingleton<PageService>()
             .AddSingleton<Configs>()
             .AddSingleton<CurrentTodoService>()
             .AddSingleton<IChatBotService, ChatGPTService>()
@@ -32,13 +31,12 @@ public partial class App : Application
             .AddSingleton<OptionsViewModel>()
             .AddSingleton<OptionsPage>();
 
-        PageService pageService = serviceCollection.GetService<PageService>()
-            .RegisterPage<TodoItemsView, TodoItemsViewModel>("Todo Items")
-            .RegisterPage<ChatWindow, ChatViewModel>("Chat")
-            .RegisterPage<OptionsPage, OptionsViewModel>("Options");
+        NavigationService navigationService = serviceCollection.GetService<NavigationService>()
+			.RegisterPage<TodoItemsView, TodoItemsViewModel>("Todo Items")
+			.RegisterPage<ChatWindow, ChatViewModel>("Chat")
+			.RegisterPage<OptionsPage, OptionsViewModel>("Options");
 
-        NavigationService navigationService = serviceCollection.GetService<NavigationService>();
-        navigationService.CurrentPageData = pageService.Pages[typeof(TodoItemsViewModel)];
+        navigationService.Navigate<TodoItemsViewModel>();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
