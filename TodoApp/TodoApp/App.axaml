@@ -17,7 +17,5 @@
 		<StyleInclude Source="/Styles/TodoStyles.axaml" />
 		<StyleInclude Source="/Views/IconText.axaml" />
 		<StyleInclude Source="/Views/IconToggleButton.axaml" />
-
-		<StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
 	</Application.Styles>
 </Application>
