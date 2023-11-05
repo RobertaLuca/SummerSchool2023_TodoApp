@@ -3,20 +3,21 @@
 			 xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              x:Class="TodoApp.App"
 			 RequestedThemeVariant="Light">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+	<!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
 	<Application.Resources>
 		<SolidColorBrush x:Key="Warning">#ff9966</SolidColorBrush>
 		<SolidColorBrush x:Key="Success">#198754</SolidColorBrush>
 	</Application.Resources>
-	
-    <Application.Styles>
-        <icons:MaterialIconStyles />
+
+	<Application.Styles>
+		<FluentTheme/>
+
+		<icons:MaterialIconStyles />
 		<StyleInclude Source="/Styles/TodoStyles.axaml" />
 		<StyleInclude Source="/Views/IconText.axaml" />
 		<StyleInclude Source="/Views/IconToggleButton.axaml" />
 
 		<StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
-        <FluentTheme/>
-    </Application.Styles>
+	</Application.Styles>
 </Application>
