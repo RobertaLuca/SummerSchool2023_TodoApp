@@ -11,10 +11,10 @@
 			 xmlns:core="using:Core"
 			 xmlns:views="using:TodoApp.Views"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="TodoApp.Views.ChatWindow"
+             x:Class="TodoApp.Views.ChatPage"
 			 x:DataType="vm:ChatViewModel"
 			 x:CompileBindings="True">
-	
+
 	<Design.DataContext>
 		<vm:ChatViewModel>
 			<x:Arguments>

@@ -2,9 +2,10 @@
 
 namespace TodoApp.Services;
 
+// TODO: maybe it would better for pages to inject directly the IConfiguration interface and to create this in the when the app starts?
 public class Configs
 {
-	private IConfigurationRoot _configurationRoot;
+	private readonly IConfigurationRoot _configurationRoot;
 
     public Configs()
     {
@@ -15,6 +16,6 @@ public class Configs
 
     public string? GetSetting(string key)
 	{
-		return _configurationRoot.GetSection(key).Value;
+		return _configurationRoot[key];
 	}
 }

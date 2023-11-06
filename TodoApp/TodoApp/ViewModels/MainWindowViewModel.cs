@@ -31,7 +31,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 			IsActiveChanged(false, Content.DataContext);
 		}
 
-		var control = _serviceCollection.GetService(pageData.ViewType!) as UserControl ?? throw new Exception("null control");
+		var control = _serviceCollection.GetService(pageData.ViewType!) as UserControl ?? throw new NullReferenceException($"UserControl of type: {pageData.ViewType.FullName} is not of type {typeof(UserControl).FullName}");
 		control.DataContext = _serviceCollection.GetService(pageData.ViewModelType!);
 		Content = control;
 

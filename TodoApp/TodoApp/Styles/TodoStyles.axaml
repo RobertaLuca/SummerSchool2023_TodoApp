@@ -6,6 +6,26 @@
 	<Design.PreviewWith>
 		<Border Padding="20">
 			<!-- Add Controls for Previewer Here -->
+
+			<md:MarkdownScrollViewer xml:space="preserve">
+				Hello
+				
+				This is a list
+				* Item 1
+				* Item 2
+				
+				```csharp
+				class MyClass
+				{
+					public void Hello()
+					{
+						Console.WriteLine("Hello there!");
+					}
+				}
+				```
+				
+				`Inline code`
+			</md:MarkdownScrollViewer>
 		</Border>
 	</Design.PreviewWith>
 
@@ -29,15 +49,15 @@
 
 	<!--markdown styles-->
 	<Style Selector="Border.CodeBlock">
-		<Style.Setters>
-			<Setter Property="BorderBrush" Value="Gray"/>
-			<Setter Property="CornerRadius" Value="5" />
-			<Setter Property="BorderThickness" Value="1"/>
-		</Style.Setters>
+		<Setter Property="BorderBrush" Value="Gray"/>
+		<Setter Property="CornerRadius" Value="5" />
+		<Setter Property="BorderThickness" Value="1"/> 
+		<!--TODO: border styles not applied properly--> 
 	</Style>
 
 	<Style Selector="avedit|TextEditor">
 		<Setter Property="Margin" Value="2" />
 		<Setter Property="ShowLineNumbers" Value="True"/>
+		<Setter Property="FontFamily" Value="Consolas"/>
 	</Style>
 </Styles>

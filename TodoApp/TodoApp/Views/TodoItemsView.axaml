@@ -19,7 +19,6 @@
 	<Design.DataContext>
 		<vm:TodoItemsViewModel>
 			<x:Arguments>
-				<mock:DesignChatService/>
 				<core:NavigationService/>
 				<services:CurrentTodoService/>
 			</x:Arguments>

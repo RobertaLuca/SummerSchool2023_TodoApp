@@ -27,13 +27,13 @@ public partial class App : Application
             .AddSingleton<TodoItemsView>()
             .AddSingleton<MainWindowViewModel>()
             .AddScope<ChatViewModel>()
-            .AddSingleton<ChatWindow>()
+            .AddSingleton<ChatPage>()
             .AddSingleton<OptionsViewModel>()
             .AddSingleton<OptionsPage>();
 
         NavigationService navigationService = serviceCollection.GetService<NavigationService>()
 			.RegisterPage<TodoItemsView, TodoItemsViewModel>("Todo Items")
-			.RegisterPage<ChatWindow, ChatViewModel>("Chat")
+			.RegisterPage<ChatPage, ChatViewModel>("Chat")
 			.RegisterPage<OptionsPage, OptionsViewModel>("Options");
 
         navigationService.Navigate<TodoItemsViewModel>();

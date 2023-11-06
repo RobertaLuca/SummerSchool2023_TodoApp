@@ -2,9 +2,9 @@ using Avalonia.Controls;
 
 namespace TodoApp.Views
 {
-	public partial class ChatWindow : UserControl
+	public partial class ChatPage : UserControl
 	{
-		public ChatWindow()
+		public ChatPage()
 		{
 			InitializeComponent();
 		}

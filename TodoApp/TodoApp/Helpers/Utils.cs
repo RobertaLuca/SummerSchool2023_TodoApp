@@ -5,8 +5,6 @@ namespace TodoApp.Helpers;
 
 static public partial class Utils
 {
-    private static Regex pattern = MyRegex();
-
     static public string ReadSetting(string key)
     {
         try
@@ -28,7 +26,7 @@ static public partial class Utils
         
 
         // Create a regular expression object and find matches in the input string
-        MatchCollection matches = pattern.Matches(input);
+        MatchCollection matches = MyRegex().Matches(input);
 
         // Process each match and extract the title and description
         foreach (Match match in matches)

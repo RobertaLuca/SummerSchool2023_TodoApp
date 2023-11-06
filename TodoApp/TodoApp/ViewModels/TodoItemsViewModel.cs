@@ -6,6 +6,7 @@ using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Core;
+using DynamicData;
 using System.Collections.ObjectModel;
 using System.Text.Json;
 using TodoApp.Models;
@@ -16,7 +17,6 @@ namespace TodoApp.ViewModels;
 
 public sealed partial class TodoItemsViewModel : ViewModelBase
 {
-	private readonly IChatBotService _chatBotService;
 	private readonly NavigationService _navigationService;
 	private readonly CurrentTodoService _currentTodoService;
 
@@ -24,9 +24,8 @@ public sealed partial class TodoItemsViewModel : ViewModelBase
 	[ObservableProperty] private string? _theoreticalInfo;
 	[ObservableProperty] private bool? _backgroundTask;
 
-	public TodoItemsViewModel(IChatBotService chatBotService, NavigationService navigationService, CurrentTodoService currentTodoService)
+	public TodoItemsViewModel(NavigationService navigationService, CurrentTodoService currentTodoService)
 	{
-		_chatBotService = chatBotService;
 		_navigationService = navigationService;
 		_currentTodoService = currentTodoService;
 		BackgroundTask = false;
@@ -47,23 +46,12 @@ public sealed partial class TodoItemsViewModel : ViewModelBase
 	public ObservableCollection<TodoItemViewModel> TodoItems { get; } = new();
 
 	[RelayCommand]
-	private async Task CalculateMass(TodoItemViewModel todoItem)
-	{
-		BackgroundTask = true;
-
-		if (todoItem.IsDone)
-		{
-			ChatResponse = "Congratulations on the completed task!";
-			return;
-		}
-
-		ChatResponse = await _chatBotService.AskAdvice(todoItem.Title, todoItem.Description);
-		BackgroundTask = false;
-	}
-
-	[RelayCommand]
 	private async Task GenerateTasks(string topic)
 	{
+		// TODO: reflect
+		// should the new redesign app still be able to generate a list of todos?
+		// maybe would it be helpful to break down even further the given todos from the handout
+
 		//BackgroundTask = true;
 		//if (string.IsNullOrEmpty(topic))
 		//{             
@@ -107,9 +95,11 @@ public sealed partial class TodoItemsViewModel : ViewModelBase
 		Window mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow! : throw new Exception("null main window");
 		await addItemPopup.ShowDialog(mainWindow);
 
-		if (addTodoItemViewModel.IsValid)
+		TodoItem? item = addTodoItemViewModel.CreatedItem;
+
+		if (item is not null)
 		{
-			var task = new TodoItemViewModel(addTodoItemViewModel.CreatedItem!, DeleteItemCommand, OpenTodoCommand);
+			var task = new TodoItemViewModel(item, DeleteItemCommand, OpenTodoCommand);
 			TodoItems.Add(task);
 		}
 	}
@@ -119,15 +109,13 @@ public sealed partial class TodoItemsViewModel : ViewModelBase
 	{
 		_allTodoItems = TodoItems.OrderBy(x => x.DueDate).Where(x => x.DueDate <= DateOnly.FromDateTime(DateTime.Now)).ToList();
 
-		// TODO: should ReactiveUI be kept just for these methods???
-		//TodoItems.RemoveMany(_allTodoItems);
+		TodoItems.RemoveMany(_allTodoItems);
 	}
 
 	[RelayCommand]
 	private void GetAllItems()
 	{
-		// TODO:
-		//TodoItems.AddRange(_allTodoItems);
+		TodoItems.AddRange(_allTodoItems);
 
 		_allTodoItems.Clear();
 	}
