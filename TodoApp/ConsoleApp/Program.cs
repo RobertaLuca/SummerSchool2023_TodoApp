@@ -118,41 +118,41 @@ namespace ConsoleApp
 
         private static async Task ChatGPT()
         {
-            string apiKey = "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";
-            IChatBotService chatBotService = new ChatGPTService(apiKey);
+            //string apiKey = "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";
+            //IChatBotService chatBotService = new ChatGPTService(apiKey);
 
-            Console.WriteLine("Welcome to the ChatGPT chatbot! Type 'exit' to quit.");
+            //Console.WriteLine("Welcome to the ChatGPT chatbot! Type 'exit' to quit.");
 
-            // Enter a loop to take user input and display chatbot responses
-            while (true)
-            {
-                // Prompt the user for input
-                Console.ForegroundColor = ConsoleColor.Green; // Set text color to green
-                Console.Write("You: ");
-                Console.ResetColor(); // Reset text color to default
-                string input = Console.ReadLine() ?? string.Empty;
+            //// Enter a loop to take user input and display chatbot responses
+            //while (true)
+            //{
+            //    // Prompt the user for input
+            //    Console.ForegroundColor = ConsoleColor.Green; // Set text color to green
+            //    Console.Write("You: ");
+            //    Console.ResetColor(); // Reset text color to default
+            //    string input = Console.ReadLine() ?? string.Empty;
 
-                // Exit the loop if the user types "exit"
-                if (input.ToLower() == "exit")
-                    break;
+            //    // Exit the loop if the user types "exit"
+            //    if (input.ToLower() == "exit")
+            //        break;
 
-                if (input.Trim() == string.Empty)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Please input something!");
-                    Console.ResetColor();
-                    continue;
-                }
+            //    if (input.Trim() == string.Empty)
+            //    {
+            //        Console.ForegroundColor = ConsoleColor.Red;
+            //        Console.WriteLine("Please input something!");
+            //        Console.ResetColor();
+            //        continue;
+            //    }
 
-                // Send the user's input to the ChatGPT API and receive a response
-                string response = await chatBotService.GetResponse(input, "gpt-3.5-turbo", Constants.Messages.GetTaskListMessage);
+            //    // Send the user's input to the ChatGPT API and receive a response
+            //    string response = await chatBotService.GetResponse(input, "gpt-3.5-turbo", Constants.Messages.GetTaskListMessage);
 
-                // Display the chatbot's response
-                Console.ForegroundColor = ConsoleColor.Blue; // Set text color to blue
-                Console.Write("Chatbot: ");
-                Console.ResetColor(); // Reset text color to default
-                Console.WriteLine(response);
-            }
+            //    // Display the chatbot's response
+            //    Console.ForegroundColor = ConsoleColor.Blue; // Set text color to blue
+            //    Console.Write("Chatbot: ");
+            //    Console.ResetColor(); // Reset text color to default
+            //    Console.WriteLine(response);
+            //}
         }
     }
 }

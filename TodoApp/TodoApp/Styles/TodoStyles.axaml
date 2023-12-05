@@ -1,0 +1,63 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+		xmlns:avedit="https://github.com/avaloniaui/avaloniaedit"
+		xmlns:md="https://github.com/whistyun/Markdown.Avalonia">
+	<Design.PreviewWith>
+		<Border Padding="20">
+			<!-- Add Controls for Previewer Here -->
+
+			<md:MarkdownScrollViewer xml:space="preserve">
+				Hello
+				
+				This is a list
+				* Item 1
+				* Item 2
+				
+				```csharp
+				class MyClass
+				{
+					public void Hello()
+					{
+						Console.WriteLine("Hello there!");
+					}
+				}
+				```
+				
+				`Inline code`
+			</md:MarkdownScrollViewer>
+		</Border>
+	</Design.PreviewWith>
+
+	<!-- Add Styles Here -->
+
+	<Style Selector="TextBlock.h1">
+		<Setter Property="FontSize" Value="18"></Setter>
+		<Setter Property="FontFamily" Value="Bold"></Setter>
+	</Style>
+
+	<Style Selector="icons|MaterialIcon">
+		<Setter Property="Width" Value="20"/>
+		<Setter Property="Height" Value="20"/>
+	</Style>
+
+	<Style Selector="Border.horizontalDivider">
+		<Setter Property="HorizontalAlignment" Value="Stretch"/>
+		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="Background" Value="Gray"/>
+	</Style>
+
+	<!--markdown styles-->
+	<Style Selector="Border.CodeBlock">
+		<Setter Property="BorderBrush" Value="Gray"/>
+		<Setter Property="CornerRadius" Value="5" />
+		<Setter Property="BorderThickness" Value="1"/> 
+		<!--TODO: border styles not applied properly--> 
+	</Style>
+
+	<Style Selector="avedit|TextEditor">
+		<Setter Property="Margin" Value="2" />
+		<Setter Property="ShowLineNumbers" Value="True"/>
+		<Setter Property="FontFamily" Value="Consolas"/>
+	</Style>
+</Styles>

@@ -1,7 +1,8 @@
 ﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-
+using Core;
+using TodoApp.Services;
 using TodoApp.ViewModels;
 using TodoApp.Views;
 
@@ -16,11 +17,32 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        ServiceCollection serviceCollection = new();
+        serviceCollection.AddSingleton(serviceCollection)
+            .AddSingleton<NavigationService>()
+            .AddSingleton<Configs>()
+            .AddSingleton<CurrentTodoService>()
+            .AddSingleton<IChatBotService, ChatGPTService>()
+            .AddSingleton<TodoItemsViewModel>()
+            .AddSingleton<TodoItemsView>()
+            .AddSingleton<MainWindowViewModel>()
+            .AddScope<ChatViewModel>()
+            .AddSingleton<ChatPage>()
+            .AddSingleton<OptionsViewModel>()
+            .AddSingleton<OptionsPage>();
+
+        NavigationService navigationService = serviceCollection.GetService<NavigationService>()
+			.RegisterPage<TodoItemsView, TodoItemsViewModel>("Todo Items")
+			.RegisterPage<ChatPage, ChatViewModel>("Chat")
+			.RegisterPage<OptionsPage, OptionsViewModel>("Options");
+
+        navigationService.Navigate<TodoItemsViewModel>();
+
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new TodoItemsViewModel()
+                DataContext = serviceCollection.GetService<MainWindowViewModel>()
             };
         }
       

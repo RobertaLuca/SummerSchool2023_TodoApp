@@ -1,0 +1,73 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+			 xmlns:md="clr-namespace:Markdown.Avalonia;assembly=Markdown.Avalonia"
+			 xmlns:vm="using:TodoApp.ViewModels"
+			 xmlns:models="using:TodoApp.Models"
+			 xmlns:services="using:TodoApp.Services"
+			 xmlns:mock="using:TodoApp.Design"
+			 xmlns:core="using:Core"
+			 xmlns:views="using:TodoApp.Views"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="TodoApp.Views.ChatPage"
+			 x:DataType="vm:ChatViewModel"
+			 x:CompileBindings="True">
+
+	<Design.DataContext>
+		<vm:ChatViewModel>
+			<x:Arguments>
+				<services:CurrentTodoService>
+					<services:CurrentTodoService.CurrentTodo>
+						<models:TodoItem Title="I want to learn C#" Description="I really wanna"/>
+					</services:CurrentTodoService.CurrentTodo>
+				</services:CurrentTodoService>
+				<mock:DesignChatService/>
+				<core:NavigationService/>
+			</x:Arguments>
+		</vm:ChatViewModel>
+	</Design.DataContext>
+
+
+	<SplitView IsPaneOpen="True" DisplayMode="CompactInline">
+		<SplitView.Pane>
+			<StackPanel Spacing="5" Margin="10">
+				<TextBlock Classes="h1">Todo Title</TextBlock>
+				<TextBlock Text="{Binding TodoItem.Title}"/>
+
+				<TextBlock Classes="h1">Todo Description</TextBlock>
+				<TextBlock Text="{Binding TodoItem.Description}"/>
+
+				<Border Classes="horizontalDivider"/>
+
+				<TextBlock Classes="h1">System Prompt</TextBlock>
+
+				<TextBox Text="{Binding ChatBotService.SystemPrompt}" TextWrapping="Wrap"/>
+
+				<Border Classes="horizontalDivider"/>
+				<Button HorizontalAlignment="Stretch" Command="{Binding AskForHelpCommand}">
+					<views:IconText Icon="RobotOutline" Text="Ask for help"></views:IconText>
+				</Button>
+
+
+				<Button HorizontalAlignment="Stretch" Command="{Binding GoBackCommand}">
+					<views:IconText Icon="ArrowBack" Text="Main Page"/>
+				</Button>
+			</StackPanel>
+		</SplitView.Pane>
+
+		<DockPanel VerticalAlignment="Stretch" Margin="0 10 0 0">
+			<ScrollViewer DockPanel.Dock="Top">
+				<StackPanel Spacing="5" >
+					<TextBlock HorizontalAlignment="Center" Classes="h1">Chat help</TextBlock>
+
+					<md:MarkdownScrollViewer Markdown="{Binding ChatResponse}"/>
+				</StackPanel>
+			</ScrollViewer>
+
+			<ProgressBar DockPanel.Dock="Bottom" VerticalAlignment="Bottom" Margin="10" IsIndeterminate="True" IsVisible="{Binding AskForHelpCommand.IsRunning}" />
+		</DockPanel>
+	</SplitView>
+</UserControl>
+

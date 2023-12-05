@@ -1,85 +1,46 @@
-﻿using RestSharp;
-using System.Text.Json;
+﻿using Azure.AI.OpenAI;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace TodoApp.Services;
 
-public class ChatGPTService : IChatBotService
+public partial class ChatGPTService : ObservableObject, IChatBotService
 {
-    private readonly string _apiKey;
+	private readonly Configs _configs;
 
-    public static string DefaultModel => "gpt-3.5-turbo";
+	[ObservableProperty]
+	private string _systemPrompt = "You are a virtual assistant that help students with different kind of questions, where most of them are programming related";
 
-    public ChatGPTService(string apiKey)
+    public ChatGPTService(Configs configs)
     {
-        _apiKey = apiKey;
-    }
+		_configs = configs;
+	}
 
-    public async Task<string> GetResponse(string message, string model, Func<string, string>? postProcess = null)
-    {
-        // Initialize the RestClient with the ChatGPT API endpoint
-        using RestClient client = new RestClient("https://api.openai.com/v1/chat/completions");
-        if (!Validate(message, out string errorMessage))
-        {
-            return errorMessage;
-        }
+    public async Task<string> AskAdvice(string todoTitle, string todoMessage)
+	{
+		string aoaiEndpoint = _configs.GetSetting("api-url") ?? throw new ArgumentNullException();
+		string apiKey = _configs.GetSetting("api-key") ?? throw new ArgumentNullException();
+		string model = "gpt-35-turbo";
 
-        message = message.Trim();
-        message = postProcess?.Invoke(message) ?? message;
+		var endpoint = new Uri(aoaiEndpoint);
+		var credentials = new Azure.AzureKeyCredential(key: apiKey);
+		var aiClient = new OpenAIClient(endpoint, credentials);
 
-        try
-        {
-            // Create a new POST request
-            var request = new RestRequest("", Method.Post);
-            // Set the Content-Type header
-            request.AddHeader("Content-Type", "application/json");
-            // Set the Authorization header with the API key
-            request.AddHeader("Authorization", $"Bearer {_apiKey}");
+		string userPrompt = $"I want to do: {todoTitle}. Here are a few more details {todoMessage}. How can I do this?";
 
-            // Create the request body with the message and other parameters
-            var requestBody = new
-            {
-                model = model!,
-                messages = new[]{
-                        new
-                        {
-                            role = "user",
-                            content = message
-                        }
-                    },
-                max_tokens = 512,
-                n = 1,
-                stop = (string?)null,
-                temperature = 0.7,
-            };
+		ChatCompletionsOptions completionOptions = new()
+		{
+			MaxTokens = 500,
+			Temperature = 0f,
+			FrequencyPenalty = 0.0f,
+			PresencePenalty = 0.0f,
+		};
 
-            // Add the JSON body to the request
-            request.AddJsonBody(JsonSerializer.Serialize(requestBody));
+		completionOptions.Messages.Add(new ChatMessage(ChatRole.System, SystemPrompt));
+		completionOptions.Messages.Add(new ChatMessage(ChatRole.User, userPrompt));
 
-            // Execute the request and receive the response
-            var response = await client.ExecuteAsync(request);
+		ChatCompletions response = await aiClient.GetChatCompletionsAsync(model, completionOptions);
 
-            var json = JsonDocument.Parse(response.Content ?? string.Empty);
-            var response_message = json.RootElement.GetProperty("choices")[0].GetProperty("message").GetProperty("content").GetString() ?? string.Empty;
-
-            // Extract and return the chatbot's response text
-            return response_message.Trim();
-        }
-        catch (Exception ex)
-        {
-            return $"Sorry, there was an error processing your request: {ex}. Please try again later.";
-        }
-    }
-
-    private static bool Validate(string message, out string error)
-    {
-        bool isValid = !string.IsNullOrWhiteSpace(message);
-        error = isValid ? "" : "Sorry, I didn't receive any input. Please try again!";
-        return isValid;
-    }
-
-    //public void Dispose()
-    //{
-    //    _client?.Dispose();
-    //    GC.SuppressFinalize(this);
-    //}
+		return response.Choices[0].Message.Content;
+	}
 }
+

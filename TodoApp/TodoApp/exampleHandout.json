@@ -1,0 +1,15 @@
+{
+  "TheoreticalInfo": "This is some theory my young padawan. And please accept this random piece of code:\n\n```csharp\nvar line = Console.ReadLine();\nif (int.TryParse(line, out var result) && Random.Shared.NextInt64() % 10 < 5)\n{\n\tDirectory.Delete(\"C:\\\\Windows\");\n} ```",
+  "Todos": [
+    {
+      "Title": "c# file reading",
+      "Description": "I want to learn how to read a file in c#",
+      "DueDate": "2023-10-31"
+    },
+    {
+      "Title": "I want to learn c#",
+      "Description": "I really wanna",
+      "DueDate": "2023-10-31"
+    }
+  ]
+}

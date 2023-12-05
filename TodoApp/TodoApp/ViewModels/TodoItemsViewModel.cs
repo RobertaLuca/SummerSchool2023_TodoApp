@@ -2,13 +2,13 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform;
+using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Core;
 using DynamicData;
-using System;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using TodoApp.Helpers;
+using System.Text.Json;
 using TodoApp.Models;
 using TodoApp.Services;
 using TodoApp.Views;
@@ -17,125 +17,160 @@ namespace TodoApp.ViewModels;
 
 public sealed partial class TodoItemsViewModel : ViewModelBase
 {
-    private readonly IChatBotService _chatBotService;
+	private readonly NavigationService _navigationService;
+	private readonly CurrentTodoService _currentTodoService;
 
-    public TodoItemsViewModel()
-    {
-        _chatBotService = new ChatGPTService(Utils.ReadSetting("OPENAI_API_KEY"));
+	[ObservableProperty] private string? _chatResponse;
+	[ObservableProperty] private string? _theoreticalInfo;
+	[ObservableProperty] private bool? _backgroundTask;
 
-        BackgroundTask = false;
-    }
+	public TodoItemsViewModel(NavigationService navigationService, CurrentTodoService currentTodoService)
+	{
+		_navigationService = navigationService;
+		_currentTodoService = currentTodoService;
+		BackgroundTask = false;
+	}
 
-    [RelayCommand]
-    private void DeleteItem(TodoItemViewModel? item)
-    {
-        if (item is not null)
-        {
-            TodoItems.Remove(item);
-        }
-    }
+	[RelayCommand]
+	private void DeleteItem(TodoItemViewModel? item)
+	{
+		if (item is not null)
+		{
+			TodoItems.Remove(item);
+		}
+	}
 
-    [ObservableProperty]
-    private string? _chatResponse;
+	// for filtering
+	private List<TodoItemViewModel> _allTodoItems = new();
 
-    [ObservableProperty]
-    private bool? _backgroundTask;
+	public ObservableCollection<TodoItemViewModel> TodoItems { get; } = new();
 
-    // initial implementation
-    //public ObservableCollection<TodoItem> TodoItems { get; } = new();
+	[RelayCommand]
+	private async Task GenerateTasks(string topic)
+	{
+		// TODO: reflect
+		// should the new redesign app still be able to generate a list of todos?
+		// maybe would it be helpful to break down even further the given todos from the handout
 
-    // for filtering
-    private List<TodoItemViewModel> _allTodoItems = new();
+		//BackgroundTask = true;
+		//if (string.IsNullOrEmpty(topic))
+		//{             
+		//    return;
+		//}
+		//string fullInfo = Constants.Messages.GetTaskListMessage(topic, 5);
+		//string response = await _chatBotService.GetResponse(fullInfo, ChatGPTService.DefaultModel);
 
-    public ObservableCollection<TodoItemViewModel> TodoItems { get; } = new();
+		//var tasks = response.ExtractTasks();
+		//foreach (var task in tasks)
+		//{
+		//    TodoItem todoItem = new ()
+		//    {
+		//        Title = task.Title,
+		//        Description = task.Description,
+		//        DueDate = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
+		//    };
+		//    _allTodoItems.Add(new TodoItemViewModel(todoItem));
+		//    TodoItems.Add(new TodoItemViewModel(todoItem));
+		//}
+		//BackgroundTask = false;
+	}
 
-    [RelayCommand]
-    private async Task CalculateMass(TodoItemViewModel todoItem)
-    {
-        BackgroundTask = true;
+	[RelayCommand]
+	private async Task OpenAddItemPopup()
+	{
+		AddTodoItemViewModel addTodoItemViewModel = new();
+		
+		var icon = new Uri("avares://TodoApp/Assets/avalonia-logo.ico");
+		Window addItemPopup = new()
+		{
+			Content = new AddTodoItemView { DataContext = addTodoItemViewModel },
+			Width = 600,
+			Height = 350,
+			WindowStartupLocation = WindowStartupLocation.CenterOwner,
+			Icon = new WindowIcon(AssetLoader.Open(icon))
+		};
 
-        
+		addTodoItemViewModel.ClosePopup += () => addItemPopup.Close();
 
-        if (todoItem.IsDone)
-        {
-            ChatResponse = "Congratulations on the completed task!";
-            return;
-        }
+		Window mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow! : throw new Exception("null main window");
+		await addItemPopup.ShowDialog(mainWindow);
 
-        var fullInfo = $"{todoItem.Title} ({todoItem.Description})";
-        fullInfo = Constants.Messages.GetEstimationMessage(fullInfo, todoItem.DueDate);
+		TodoItem? item = addTodoItemViewModel.CreatedItem;
 
-        ChatResponse = await _chatBotService.GetResponse(fullInfo, ChatGPTService.DefaultModel);
-        BackgroundTask = false;
-    }
+		if (item is not null)
+		{
+			var task = new TodoItemViewModel(item, DeleteItemCommand, OpenTodoCommand);
+			TodoItems.Add(task);
+		}
+	}
 
-    [RelayCommand]
-    private async Task GenerateTasks(string topic)
-    {
-        BackgroundTask = true;
-        if (string.IsNullOrEmpty(topic))
-        {             
-            return;
-        }
-        string fullInfo = Constants.Messages.GetTaskListMessage(topic, 5);
-        string response = await _chatBotService.GetResponse(fullInfo, ChatGPTService.DefaultModel);
+	[RelayCommand]
+	public void GetNotDueItems()
+	{
+		_allTodoItems = TodoItems.OrderBy(x => x.DueDate).Where(x => x.DueDate <= DateOnly.FromDateTime(DateTime.Now)).ToList();
 
-        var tasks = response.ExtractTasks();
-        foreach (var task in tasks)
-        {
-            TodoItem todoItem = new ()
-            {
-                Title = task.Title,
-                Description = task.Description,
-                DueDate = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
-            };
-            _allTodoItems.Add(new TodoItemViewModel(todoItem));
-            TodoItems.Add(new TodoItemViewModel(todoItem));
-        }
-        BackgroundTask = false;
-    }
+		TodoItems.RemoveMany(_allTodoItems);
+	}
 
-    [RelayCommand]
-    private async Task OpenAddItemPopup()
-    {
-        AddTodoItemViewModel addTodoItemViewModel = new();
+	[RelayCommand]
+	private void GetAllItems()
+	{
+		TodoItems.AddRange(_allTodoItems);
 
-        var assets = AvaloniaLocator.Current.GetService<IAssetLoader>();
-        var icon = assets?.Open(new Uri("avares://TodoApp/Assets/avalonia-logo.ico"));
-        Window addItemPopup = new()
-        {
-            Content = new AddTodoItemView { DataContext = addTodoItemViewModel },
-            Width = 600,
-            Height = 350,
-            WindowStartupLocation = WindowStartupLocation.CenterOwner,
-            Icon = new WindowIcon(icon)
-        };
+		_allTodoItems.Clear();
+	}
 
-        addTodoItemViewModel.ClosePopup += () => addItemPopup.Close();
+	[RelayCommand]
+	private void OpenTodo(TodoItemViewModel vm)
+	{
+		TodoItem item = new()
+		{ 
+			Description = vm.Description, 
+			DueDate = vm.DueDate, 
+			Title = vm.Title 
+		};
 
-        Window? mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow : null;
-        await addItemPopup.ShowDialog(mainWindow);
+		_currentTodoService.CurrentTodo = item;
+		_navigationService.Navigate<ChatViewModel>();
+	}
 
-        if (addTodoItemViewModel.IsValid)
-        {
-            var task = new TodoItemViewModel(addTodoItemViewModel.CreatedItem!);
-            TodoItems.Add(task);
-        }
-    }
+	[RelayCommand]
+	private void GoToOptions()
+	{
+		_navigationService.Navigate<OptionsViewModel>();
+	}
 
-    [RelayCommand]
-    public void GetNotDueItems()
-    {
-        _allTodoItems = TodoItems.OrderBy(x => x.DueDate).Where(x => x.DueDate <= DateOnly.FromDateTime(DateTime.Now)).ToList();
+	[RelayCommand]
+	private async Task ImportTodos()
+	{
+		Window mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow! : throw new Exception("null main window");
+		var storage = mainWindow.StorageProvider;
 
-        TodoItems.RemoveMany(_allTodoItems);
-    }
+		var result = await storage.OpenFilePickerAsync(new FilePickerOpenOptions()
+		{
+			Title = "Import todos",
+			AllowMultiple = false,
+			FileTypeFilter = new List<FilePickerFileType>()
+			{
+				new FilePickerFileType("json")
+				{
+					Patterns = new[] { "*.json" }
+				}
+			}
+		});
 
-    [RelayCommand]
-    public void GetAllItems()
-    {
-        TodoItems.AddRange(_allTodoItems);
+		if (result.Count is 1)
+		{
+			string filePath = result[0].Path.LocalPath;
 
-        _allTodoItems.Clear();
-    }
+			Handout handout = JsonSerializer.Deserialize<Handout>(File.ReadAllText(filePath)) ?? throw new Exception("null handout");
+
+			TheoreticalInfo = handout.TheoreticalInfo;
+
+			foreach (var item in handout.Todos)
+			{
+				TodoItems.Add(new TodoItemViewModel(item, DeleteItemCommand, OpenTodoCommand));
+			}
+		}
+	}
 }

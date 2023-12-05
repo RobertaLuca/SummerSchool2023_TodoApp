@@ -7,6 +7,8 @@
 		<Platforms>AnyCPU</Platforms>
 		<OutputType>WinExe</OutputType>
 		<ImplicitUsings>true</ImplicitUsings>
+		<UserSecretsId>684c11c1-0530-41f6-ae46-7f00bc4441f5</UserSecretsId>
+		<AvaloniaUseCompoledBindingsByDefault>true</AvaloniaUseCompoledBindingsByDefault>
 	</PropertyGroup>
 
 
@@ -15,22 +17,36 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Avalonia" Version="0.10.18" />
-		<PackageReference Include="Avalonia.Desktop" Version="0.10.18" />
-		<PackageReference Include="Avalonia.Diagnostics" Version="0.10.18" />
-		<PackageReference Include="Avalonia.ReactiveUI" Version="0.10.18" />
-		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
-		<PackageReference Include="LLamaSharp" Version="0.4.0" />
-		<PackageReference Include="LLamaSharp.Backend.Cpu" Version="0.3.1" />
-		<PackageReference Include="Material.Icons.Avalonia" Version="1.1.10" />
-		<PackageReference Include="RestSharp" Version="110.2.0" />
+		<PackageReference Include="Avalonia" Version="11.0.5" />
+		<PackageReference Include="Avalonia.Controls.ItemsRepeater" Version="11.0.5" />
+		<PackageReference Include="Avalonia.Desktop" Version="11.0.5" />
+		<PackageReference Include="Avalonia.Diagnostics" Version="11.0.5" />
+		<PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.5" />
+		<PackageReference Include="Azure.AI.OpenAI" Version="1.0.0-beta.8" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+		<PackageReference Include="DynamicData" Version="8.1.1" />
+		<PackageReference Include="Markdown.Avalonia" Version="11.0.2" />
+		<PackageReference Include="Material.Icons.Avalonia" Version="2.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
 		<PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
-		<PackageReference Include="XamlNameReferenceGenerator" Version="1.3.4" />
+		<PackageReference Include="Serilog" Version="3.0.2-dev-02044" />
+		<PackageReference Include="Serilog.Sinks.File" Version="5.0.1-dev-00947" />
 
 		<!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
 	</ItemGroup>
 
 	<ItemGroup>
 		<Folder Include="LLamaModels\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Core\Core.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="exampleHandout.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 </Project>

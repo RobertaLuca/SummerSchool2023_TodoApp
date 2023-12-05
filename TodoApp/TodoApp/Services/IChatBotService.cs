@@ -2,5 +2,7 @@
 
 public interface IChatBotService
 {
-    public Task<string> GetResponse(string message, string model, Func<string, string>? postProcess = null);
+	public Task<string> AskAdvice(string todoTitle, string todoMessage);
+
+	public string SystemPrompt { get; set; }
 }

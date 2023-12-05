@@ -2,20 +2,27 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:TodoApp.ViewModels"
+             xmlns:vm="using:TodoApp.ViewModels"
+			 xmlns:core="using:Core"
+			 xmlns:views="using:TodoApp.Views"
+			 xmlns:services="using:TodoApp.Services"
 			 xmlns:converters="using:TodoApp.Converters"
+			 xmlns:mock="using:TodoApp.Design"
              xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+			 xmlns:md="clr-namespace:Markdown.Avalonia;assembly=Markdown.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="TodoApp.Views.TodoItemsView"
              x:DataType="vm:TodoItemsViewModel"
              x:CompileBindings="True"
-			 Focusable="True"
-			 Background="#f9f8f7">
+			 Focusable="True">
 
 	<Design.DataContext>
-		<!-- This only sets the DataContext for the previewer in an IDE,
-         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-		<vm:TodoItemsViewModel />
+		<vm:TodoItemsViewModel>
+			<x:Arguments>
+				<core:NavigationService/>
+				<services:CurrentTodoService/>
+			</x:Arguments>
+		</vm:TodoItemsViewModel>
 	</Design.DataContext>
 
 	<UserControl.Resources>
@@ -26,16 +33,11 @@
 	</UserControl.Resources>
 
 	<UserControl.Styles>
-		<Style Selector="icons|MaterialIcon">
-			<Setter Property="Width" Value="20"/>
-			<Setter Property="Height" Value="20"/>
-		</Style>
-
 		<Style Selector="ToggleButton.mark_checkbox:checked > icons|MaterialIcon">
 			<Setter Property="Kind" Value="CheckboxMarkedCircleOutline" />
 			<Setter Property="Foreground" Value="{DynamicResource Success}" />
 		</Style>
-		
+
 		<Style Selector="ToggleButton.mark_checkbox:pointerover /template/ ContentPresenter#PART_ContentPresenter">
 			<Setter Property="Background" Value="Transparent" />
 		</Style>
@@ -57,28 +59,28 @@
 			<Setter Property="Kind" Value="CheckboxMarkedCircleOutline" />
 			<Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
 		</Style>
-
-		<Style Selector="TextBlock.h1">
-			<Setter Property="FontSize" Value="18"></Setter>
-			<Setter Property="FontFamily" Value="Bold"></Setter>
-		</Style>
 	</UserControl.Styles>
 
 	<ScrollViewer>
 		<Grid RowDefinitions="1* 1* 5* 1* 1*">
-			<Grid
-				ColumnDefinitions="* 3* *"
-				Margin="5"
-				Grid.Row="1"
-				HorizontalAlignment="Stretch">
-				<StackPanel
-					Spacing="10"
-					Orientation="Horizontal">
-					<Button Width="40" Height="40" Command="{Binding OpenAddItemPopupCommand}">
+
+			<!--Buttons and Search bar-->
+			<Grid ColumnDefinitions="* 2* *" Margin="5" Grid.Row="1" HorizontalAlignment="Stretch">
+				
+				<!--Left buttons-->
+				<StackPanel Spacing="10" Orientation="Horizontal">
+					<Button Width="40" Height="40" Command="{Binding OpenAddItemPopupCommand}" ToolTip.Tip="Add Todo">
 						<icons:MaterialIcon Width="40" Height="40" Kind="Add"/>
+					</Button>
+					<Button Width="40" Height="40" Command="{Binding ImportTodosCommand}" ToolTip.Tip="Import">
+						<icons:MaterialIcon Kind="Import" Width="35" Height="35"></icons:MaterialIcon>
+					</Button>
+					<Button Width="40" Height="40" Command="{Binding GoToOptionsCommand}" ToolTip.Tip="Options">
+						<icons:MaterialIcon Kind="Settings" Width="35" Height="35"></icons:MaterialIcon>
 					</Button>
 				</StackPanel>
 
+				<!--Search bar-->
 				<TextBox
 					Name="SearchInput"
 					Grid.Column="1"
@@ -90,40 +92,18 @@
 					KeyDown="SearchInput_KeyDown"
 					>
 					<TextBox.InnerLeftContent>
-						<StackPanel VerticalAlignment="Center" Margin="5 0 0 0">
-							<icons:MaterialIcon
-								Width="30"
-								Height="30"
-								Kind="RobotExcitedOutline"
-								VerticalAlignment="Center"/>
-						</StackPanel>
+						<icons:MaterialIcon Width="30" Height="30" Kind="RobotExcitedOutline" VerticalAlignment="Center" Margin="5 0"/>
 					</TextBox.InnerLeftContent>
 
 					<TextBox.InnerRightContent>
-						<StackPanel VerticalAlignment="Center" Margin="0 0 5 0">
-							<Button
-								Name="GenerateButton"
-								Height="30"
-								Background="Transparent"
-								Command="{Binding GenerateTasksCommand}"
-								CommandParameter="{ReflectionBinding #SearchInput.Text}">
-								<StackPanel Orientation="Horizontal" Spacing="10">
-									<icons:MaterialIcon
-										Width="30"
-										Height="30"
-										VerticalAlignment="Center"
-										Kind="Magnify"/>
-								</StackPanel>
-							</Button>
-						</StackPanel>
+						<Button Background="Transparent" Command="{Binding GenerateTasksCommand}" CommandParameter="{ReflectionBinding #SearchInput.Text}">
+							<icons:MaterialIcon Width="30" Height="30" VerticalAlignment="Center" Kind="Magnify"/>
+						</Button>
 					</TextBox.InnerRightContent>
 				</TextBox>
 
-				<StackPanel
-					Spacing="10"
-					Grid.Column="2"
-					Orientation="Horizontal"
-					HorizontalAlignment="Right">
+				<!--Right buttons-->
+				<StackPanel Spacing="10" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
 					<Button Width="40" Height="40" Command="{Binding GetNotDueItemsCommand}">
 						<icons:MaterialIcon Width="40" Height="40" Kind="Filter"/>
 					</Button>
@@ -134,125 +114,119 @@
 				</StackPanel>
 			</Grid>
 
+			<!--Header-->
 			<StackPanel HorizontalAlignment="Center" Margin="10">
 				<TextBlock FontSize="25" HorizontalAlignment="Center" FontWeight="Bold">To-Do List</TextBlock>
 				<TextBlock Classes="h1" HorizontalAlignment="Center">Get organized and stay on top of your tasks with the power of AI.</TextBlock>
 			</StackPanel>
+
 			<TextBlock Classes="h1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="3" Margin="10"
 					   Text="{Binding ChatResponse}"></TextBlock>
-			<ProgressBar
-				IsIndeterminate="True"
-				IsVisible="{Binding BackgroundTask}"
-				Grid.Row="4"
-				Margin="10"
-				VerticalAlignment="Bottom"></ProgressBar>
-			<ItemsRepeater 
-				Items="{Binding TodoItems}"
-				Margin="0 20 0 0"
-				Grid.Row="2"
-				HorizontalAlignment="Center"
-				ClipToBounds="False"
-				Name="Repeater">
-				<ItemsRepeater.Layout>
-					<UniformGridLayout 
-						MinColumnSpacing="15"
-						MinRowSpacing="15"
-						ItemsJustification="SpaceEvenly"></UniformGridLayout>
-				</ItemsRepeater.Layout>
-				<ItemsRepeater.ItemTemplate>
-					<DataTemplate x:DataType="vm:TodoItemViewModel">
-						<Border
-							CornerRadius="10"
-							Background="White"
-							BoxShadow="10 10 20 0.5 #bfbfbf"
-							MinWidth="400"
-							Height="250">
-							<Grid
-							RowDefinitions="10 2* 5 2* 5 1* 5 1* 5 1* 10"
-							ColumnDefinitions="10 1* 10">
-								<StackPanel
-									Grid.Row="1"
-									Grid.Column="1"
-									Orientation="Horizontal"
-									VerticalAlignment="Center"
-									Spacing="10">
-									<ToggleButton 
-										Classes="mark_checkbox"
-										Width="35" Height="35"
+
+			<ProgressBar IsIndeterminate="True" IsVisible="{Binding BackgroundTask}" Grid.Row="4" Margin="10" VerticalAlignment="Bottom"/>
+
+			<Grid Grid.Row="2" Margin="0 20 0 0">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" MinWidth="400"></ColumnDefinition>
+					<ColumnDefinition Width="5"></ColumnDefinition>
+					<ColumnDefinition Width="*" MinWidth="400"></ColumnDefinition>
+				</Grid.ColumnDefinitions>
+
+				<ItemsRepeater ItemsSource="{Binding TodoItems}" HorizontalAlignment="Center" ClipToBounds="False">
+					<ItemsRepeater.Layout>
+						<UniformGridLayout MinColumnSpacing="15" MinRowSpacing="15" ItemsJustification="SpaceEvenly"/>
+					</ItemsRepeater.Layout>
+					<ItemsRepeater.ItemTemplate>
+						<DataTemplate x:DataType="vm:TodoItemViewModel">
+							<Border CornerRadius="10" BoxShadow="10 10 20 0.5 Gray" MinWidth="400" Height="250" >
+								<Grid
+								RowDefinitions="10 2* 5 2* 5 1* 5 1* 5 1* 10"
+								ColumnDefinitions="10 1* 10">
+									<StackPanel
+										Grid.Row="1"
+										Grid.Column="1"
+										Orientation="Horizontal"
 										VerticalAlignment="Center"
-										IsChecked="{Binding IsDone, Mode=TwoWay}">
-										<icons:MaterialIcon Width="25" Height="25"></icons:MaterialIcon>
-									</ToggleButton>
+										Spacing="10">
+										<ToggleButton
+											Classes="mark_checkbox"
+											Width="35" Height="35"
+											VerticalAlignment="Center"
+											IsChecked="{Binding IsDone, Mode=TwoWay}">
+											<icons:MaterialIcon Width="25" Height="25"></icons:MaterialIcon>
+										</ToggleButton>
+										<TextBlock
+											Classes="h1"
+											Text="{Binding Title}"
+											HorizontalAlignment="Stretch"
+											MaxWidth="320"
+											MaxLines="2"
+											TextDecorations="{Binding IsDone, Converter={StaticResource BoolToStrikethroughConverter}}"
+											TextWrapping="Wrap"
+											TextTrimming="WordEllipsis"
+											VerticalAlignment="Center">
+										</TextBlock>
+									</StackPanel>
 									<TextBlock
+										Grid.Row="3"
+										Grid.Column="1"
 										Classes="h1"
-										Text="{Binding Title}"
+										Text="{Binding Description}"
 										HorizontalAlignment="Stretch"
-										MaxWidth="320"
-										MaxLines="2"
+										MaxWidth="380"
+										MaxLines="4"
 										TextDecorations="{Binding IsDone, Converter={StaticResource BoolToStrikethroughConverter}}"
 										TextWrapping="Wrap"
 										TextTrimming="WordEllipsis"
 										VerticalAlignment="Center">
 									</TextBlock>
-								</StackPanel>
-								<TextBlock
-									Grid.Row="3"
-									Grid.Column="1"
-									Classes="h1"
-									Text="{Binding Description}"
-									HorizontalAlignment="Stretch"
-									MaxWidth="380"
-									MaxLines="4"
-									TextDecorations="{Binding IsDone, Converter={StaticResource BoolToStrikethroughConverter}}"
-									TextWrapping="Wrap"
-									TextTrimming="WordEllipsis"
-									VerticalAlignment="Center">
-								</TextBlock>
-								<Grid Grid.Row="5" Grid.Column="1" VerticalAlignment="Center">
-									<StackPanel Orientation="Horizontal" Spacing="10">
-										<icons:MaterialIcon
-											Foreground="{Binding DueDate, Converter={StaticResource DateToSolidColorConverter}}"
-											VerticalAlignment="Center"
-											Kind="{Binding DueDate, Converter={StaticResource DateToIconKindConverter}}"/>
-										<TextBlock
-											Foreground="{Binding DueDate, Converter={StaticResource DateToSolidColorConverter}}"
-											Text="{Binding DueDate}"
-											VerticalAlignment="Center"
+									<Grid Grid.Row="5" Grid.Column="1" VerticalAlignment="Center">
+										<StackPanel Orientation="Horizontal" Spacing="10">
+											<icons:MaterialIcon
+												Foreground="{Binding DueDate, Converter={StaticResource DateToSolidColorConverter}}"
+												VerticalAlignment="Center"
+												Kind="{Binding DueDate, Converter={StaticResource DateToIconKindConverter}}"/>
+											<TextBlock
+												Foreground="{Binding DueDate, Converter={StaticResource DateToSolidColorConverter}}"
+												Text="{Binding DueDate}"
+												VerticalAlignment="Center"
 											/>
-									</StackPanel>
-									<Button Width="30" Height="30"
+										</StackPanel>
+										<Button Width="30" Height="30"
+												VerticalAlignment="Center"
+												HorizontalAlignment="Right"
+												Command="{Binding DeleteCommand}"
+												Background="Transparent"
+												CommandParameter="{Binding}">
+											<icons:MaterialIcon
+												Foreground="{DynamicResource SystemErrorTextColor}"
+												Kind="TrashCanOutline"
+												DockPanel.Dock="Top"/>
+										</Button>
+									</Grid>
+									<Border Grid.Row="7" Grid.Column="1"
+											HorizontalAlignment="Stretch"
+											BorderThickness="1"
+											BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+											VerticalAlignment="Bottom"/>
+									<Button Grid.Row="9" Grid.Column="1"
+											Command="{Binding OpenCommand}"
+											CommandParameter="{Binding .}"
 											VerticalAlignment="Center"
-											HorizontalAlignment="Right"
-											Command="{ReflectionBinding #Repeater.DataContext.DeleteItemCommand}"
-											Background="Transparent"
-											CommandParameter="{Binding}">
-										<icons:MaterialIcon
-											Foreground="{DynamicResource SystemErrorTextColor}"
-											Kind="TrashCanOutline"
-											DockPanel.Dock="Top"/>
+											HorizontalAlignment="Center">
+										<views:IconText Text="Open Todo" Icon="OpenInApp"></views:IconText>
 									</Button>
 								</Grid>
-								<Border Grid.Row="7" Grid.Column="1"
-										HorizontalAlignment="Stretch"
-										BorderThickness="1"
-										BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-										VerticalAlignment="Bottom"/>
-								<Button Grid.Row="9" Grid.Column="1"
-										Command="{ReflectionBinding #Repeater.DataContext.CalculateMassCommand}"
-										CommandParameter="{Binding .}"
-										VerticalAlignment="Center"
-										HorizontalAlignment="Center">
-									<StackPanel Orientation="Horizontal" Spacing="10">
-										<icons:MaterialIcon VerticalAlignment="Center" Kind="RobotConfused"/>
-										<TextBlock Text="Ask Chat" VerticalAlignment="Center" />
-									</StackPanel>
-								</Button>
-							</Grid>
-						</Border>
-					</DataTemplate>
-				</ItemsRepeater.ItemTemplate>
-			</ItemsRepeater>
+							</Border>
+						</DataTemplate>
+					</ItemsRepeater.ItemTemplate>
+				</ItemsRepeater>
 
+				<GridSplitter Grid.Column="1"></GridSplitter>
+				
+				<md:MarkdownScrollViewer Markdown="{Binding TheoreticalInfo}" Grid.Column="2"/>
+				
+			</Grid>
 		</Grid>
 	</ScrollViewer>
 </UserControl>
